@@ -7,21 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7322D99216E639B003773AC /* IDTech.framework */; };
+		E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */; };
+		E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */; };
+		E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D3B216E062600D35E93 /* BLEListViewController.swift */; };
 		E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92EBD216D0B2800B444BA /* AppDelegate.swift */; };
-		E7C92EC0216D0B2800B444BA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92EBF216D0B2800B444BA /* ViewController.swift */; };
 		E7C92EC3216D0B2800B444BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC1216D0B2800B444BA /* Main.storyboard */; };
 		E7C92EC5216D0B2900B444BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC4216D0B2900B444BA /* Assets.xcassets */; };
 		E7C92EC8216D0B2900B444BA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */; };
+		E7C92ED1216D0B9D00B444BA /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E7322D99216E639B003773AC /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "../../Downloads/80149808-001-B/Source/Swift/VP3300_Test_App/IDTech.framework"; sourceTree = "<group>"; };
+		E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IDTech-Bridging-Header.h"; sourceTree = "<group>"; };
+		E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceTableViewCell.swift; sourceTree = "<group>"; };
+		E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevice.swift; sourceTree = "<group>"; };
+		E79B8D3B216E062600D35E93 /* BLEListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEListViewController.swift; sourceTree = "<group>"; };
 		E7C92EBA216D0B2800B444BA /* EMV_reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMV_reader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7C92EBD216D0B2800B444BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E7C92EBF216D0B2800B444BA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E7C92EC2216D0B2800B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E7C92EC4216D0B2900B444BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7C92EC7216D0B2900B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E7C92EC9216D0B2900B444BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +38,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7C92ED1216D0B9D00B444BA /* CoreBluetooth.framework in Frameworks */,
+				E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +51,7 @@
 			children = (
 				E7C92EBC216D0B2800B444BA /* EMV_reader */,
 				E7C92EBB216D0B2800B444BA /* Products */,
+				E7C92ECF216D0B9D00B444BA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +66,26 @@
 		E7C92EBC216D0B2800B444BA /* EMV_reader */ = {
 			isa = PBXGroup;
 			children = (
+				E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */,
 				E7C92EBD216D0B2800B444BA /* AppDelegate.swift */,
-				E7C92EBF216D0B2800B444BA /* ViewController.swift */,
+				E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */,
 				E7C92EC1216D0B2800B444BA /* Main.storyboard */,
+				E79B8D3B216E062600D35E93 /* BLEListViewController.swift */,
+				E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */,
 				E7C92EC4216D0B2900B444BA /* Assets.xcassets */,
 				E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */,
 				E7C92EC9216D0B2900B444BA /* Info.plist */,
 			);
 			path = EMV_reader;
+			sourceTree = "<group>";
+		};
+		E7C92ECF216D0B9D00B444BA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E7322D99216E639B003773AC /* IDTech.framework */,
+				E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +159,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7C92EC0216D0B2800B444BA /* ViewController.swift in Sources */,
+				E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */,
+				E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */,
 				E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */,
+				E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,15 +308,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C448G82Z59;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = EMV_reader/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "beachy.EMV-reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "EMV_reader/IDTech-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -300,15 +334,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = C448G82Z59;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = EMV_reader/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "beachy.EMV-reader";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "EMV_reader/IDTech-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
