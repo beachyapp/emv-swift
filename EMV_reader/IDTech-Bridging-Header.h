@@ -10,5 +10,6 @@
 #define IDTech_Bridging_Header_h
 
 #import <IDTech/IDTech.h>
+#import <CommonCrypto/CommonCryptor.h>
 
 #endif /* IDTech_Bridging_Header_h */

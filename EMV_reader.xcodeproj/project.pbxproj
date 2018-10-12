@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F795A6390B13C7FEC80E512 /* Pods_EMV_reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */; };
 		E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7322D99216E639B003773AC /* IDTech.framework */; };
 		E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */; };
 		E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */; };
@@ -19,11 +20,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMV_reader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader.debug.xcconfig"; sourceTree = "<group>"; };
+		37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMV_reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader.release.xcconfig"; sourceTree = "<group>"; };
+		DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EMV_reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7322D99216E639B003773AC /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "../../Downloads/80149808-001-B/Source/Swift/VP3300_Test_App/IDTech.framework"; sourceTree = "<group>"; };
 		E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IDTech-Bridging-Header.h"; sourceTree = "<group>"; };
 		E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceTableViewCell.swift; sourceTree = "<group>"; };
 		E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevice.swift; sourceTree = "<group>"; };
-		E79B8D3B216E062600D35E93 /* BLEListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEListViewController.swift; sourceTree = "<group>"; };
+		E79B8D3B216E062600D35E93 /* BLEListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		E7C92EBA216D0B2800B444BA /* EMV_reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMV_reader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7C92EBD216D0B2800B444BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E7C92EC2216D0B2800B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -40,18 +44,29 @@
 			files = (
 				E7C92ED1216D0B9D00B444BA /* CoreBluetooth.framework in Frameworks */,
 				E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */,
+				5F795A6390B13C7FEC80E512 /* Pods_EMV_reader.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7D0C43BCEC16BCC773AE2D47 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */,
+				37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		E7C92EB1216D0B2700B444BA = {
 			isa = PBXGroup;
 			children = (
 				E7C92EBC216D0B2800B444BA /* EMV_reader */,
 				E7C92EBB216D0B2800B444BA /* Products */,
 				E7C92ECF216D0B9D00B444BA /* Frameworks */,
+				7D0C43BCEC16BCC773AE2D47 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,6 +99,7 @@
 			children = (
 				E7322D99216E639B003773AC /* IDTech.framework */,
 				E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */,
+				DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -95,9 +111,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7C92ECC216D0B2900B444BA /* Build configuration list for PBXNativeTarget "EMV_reader" */;
 			buildPhases = (
+				4294A452BD91EA80CBE8BE5B /* [CP] Check Pods Manifest.lock */,
 				E7C92EB6216D0B2800B444BA /* Sources */,
 				E7C92EB7216D0B2800B444BA /* Frameworks */,
 				E7C92EB8216D0B2800B444BA /* Resources */,
+				9359B0F88849C759586C75E1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -153,6 +171,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4294A452BD91EA80CBE8BE5B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EMV_reader-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9359B0F88849C759586C75E1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CryptoSwift.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E7C92EB6216D0B2800B444BA /* Sources */ = {
@@ -306,6 +363,7 @@
 		};
 		E7C92ECD216D0B2900B444BA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -332,6 +390,7 @@
 		};
 		E7C92ECE216D0B2900B444BA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
