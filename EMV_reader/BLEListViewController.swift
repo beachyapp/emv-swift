@@ -158,28 +158,38 @@ class Decrypto {
     }
     
     func getKey(bdkHex: String, ksnHex: String) -> String {
-        let derivedKey = deriveKey(bdkHex: bdkHex, ksnHex: ksnHex)
+        let IPEK = getIPEK(bdkHex: bdkHex, ksnHex: ksnHex)
+        let derivedKey = deriveKey(ksnHex: ksnHex, ipekHex: IPEK)
         
-        return derivedKey
+        let initialVector: [UInt8] = hexToByteArray(hex: "0000000000000000")
+        let dataMask = "0000000000FF00000000000000FF0000"
+        let maskedKey = binaryXOR(dataMask, derivedKey)
+        
+        let expandedMaskedKey = hexToByteArray(hex: expand3DESKey(hex: binaryDataToHexString(bytes: maskedKey)))
+        
+        let left = Array(desEncrypt(data: Array(maskedKey.prefix(8)),
+                              keyData: expandedMaskedKey,
+                              iv: initialVector)!.prefix(8))
+        
+        let right = Array(desEncrypt(data: Array(maskedKey.suffix(8)),
+                               keyData: expandedMaskedKey,
+                               iv: initialVector)!.prefix(8))
+        
+        
+        return binaryDataToHexString(bytes: (left + right))
     }
     
-    func deriveKey(bdkHex: String, ksnHex: String) -> String {
-        let IPEK = getIPEK(bdkHex: bdkHex, ksnHex: ksnHex)
+    func deriveKey(ksnHex: String, ipekHex: String) -> String {
         
         let bottomEightFromKSN = Array(hexToByteArray(hex: ksnHex).suffix(8))
         let baseKSN = binaryAnd("FFFFFFFFFFE00000", binaryDataToHexString(bytes: bottomEightFromKSN))
         
         let counter = getCounterBits(ksnHex: ksnHex)
-        var currKey = IPEK
-        
-        print("counter = \(counter)")
-        print("currKey = \(currKey)")
+        var currKey = ipekHex
         
         let counterInt = Int(binaryDataToHexString(bytes: counter), radix: 16)!
         var baseKSNInt = Int(binaryDataToHexString(bytes: baseKSN), radix: 16)!
         
-        print("counterInt = \(counterInt)")
-        print("baseKSN = \(baseKSN)")
         
         var shiftReg = 0x100000
         var pass = 0
@@ -201,7 +211,7 @@ class Decrypto {
             shiftReg >>= 1
         }
         
-        return  currKey
+        return currKey
     }
     
     func generateKey(key: String, ksn: String) -> [UInt8] {
@@ -410,11 +420,11 @@ class BLEListViewController: UIViewController {
         let bdk = "0123456789ABCDEFFEDCBA9876543210"
         let ksn = "629949012C0000000003"
         
-        let IPEK = decrypto.getKey(bdkHex: bdk, ksnHex: ksn)
+        let sessionKey = decrypto.getKey(bdkHex: bdk, ksnHex: ksn)
         
         // expected: B5610650EBC24CA3CACDD08DDAFE8CE3
         
-        print("IPEK = \(IPEK)")
+        print("sessionKey = \(sessionKey)")
     }
     
 }
