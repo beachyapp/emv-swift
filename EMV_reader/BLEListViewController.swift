@@ -84,8 +84,15 @@ class Decrypto {
     func hexToBinaryData(hex: String) -> String {
         return hex.pairs.filter({$0 != ""})
             .map({ String(UnicodeScalar(UInt8($0, radix: 16)!)) })
-            .reduce("", { return $0 + $1 });
+            .reduce("", { return $0 + $1 })
     }
+    
+    func hexToAscii(hex: String) -> String {
+        let chars = hex.pairs.filter({$0 != ""})
+            .map({ Character(UnicodeScalar(UInt8($0, radix: 16)!)) })
+        return String(chars)
+    }
+    
     
     func binaryDataToHexString(bytes: [UInt8]) -> String {
         return bytes.reduce("", {
@@ -407,24 +414,14 @@ class BLEListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        connectButton.isEnabled = false;
+        connectButton.isEnabled = false
+        listeningButton.isEnabled = false
         
         IDT_VP3300.sharedController().delegate = self
         
         centralManager = CBCentralManager(delegate: self,
                                           queue: DispatchQueue.main)
-        
-        
-        let decrypto = Decrypto()
-        
-        let bdk = "0123456789ABCDEFFEDCBA9876543210"
-        let ksn = "629949012C0000000003"
-        
-        let sessionKey = decrypto.getKey(bdkHex: bdk, ksnHex: ksn)
-        
-        // expected: B5610650EBC24CA3CACDD08DDAFE8CE3
-        
-        print("sessionKey = \(sessionKey)")
+
     }
     
 }
@@ -634,28 +631,19 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         
         if (emvData.cardData != nil) {
             
-            
-            
-            print("CARD DATA: \(String(describing: emvData.cardData))")
-            let ksn = emvData.cardData.ksn != nil ? emvData.cardData.ksn.hexEncodedString() : "nth"
-            print("KSN:  \(ksn)")
-            let ses = emvData.cardData.sessionID != nil ? emvData.cardData.sessionID.hexEncodedString() : "nth"
-            print("SESSION ID:  \(ses)")
-            let rsn = emvData.cardData.rsn != nil ? emvData.cardData.rsn : "nth"
-            print("RSN:  \(String(describing: rsn))")
+//            let ksn = emvData.cardData.ksn != nil ? emvData.cardData.ksn.hexEncodedString() : "nth"
+//            let ses = emvData.cardData.sessionID != nil ? emvData.cardData.sessionID.hexEncodedString() : "nth"
+//            let rsn = emvData.cardData.rsn != nil ? emvData.cardData.rsn : "nth"
+//
             print("STATUS:  \(emvData.cardData.readStatus)")
             
             print("-------- RAW DATA --------")
             print(emvData.cardData.cardData.hexEncodedString())
             
-            
-            
             print("-------- RAW DATA CMPLX --------")
             print(emvData.cardData.track1)
-            print(emvData.cardData.encTrack1.hexEncodedString())
-            
             print(emvData.cardData.track2)
-            print(emvData.cardData.encTrack2.hexEncodedString())
+
             
             tryParse(encryptedData: emvData.cardData!.encTrack2.hexEncodedString(),
                      key: emvData.cardData!.ksn.hexEncodedString())
@@ -676,7 +664,13 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         
         do {
             let bytesDate: [UInt8] = hexToByteArray(hex: encryptedData)
-            let keyData: [UInt8] = hexToByteArray(hex: key)
+            let ksn = key.replacingOccurrences(of: " ", with: "")
+            let bdk = "0123456789ABCDEFFEDCBA9876543210"
+
+            let decrypto = Decrypto()
+            
+            let sessionKey = decrypto.getKey(bdkHex: bdk, ksnHex: ksn)
+            let keyData = hexToByteArray(hex: sessionKey)
             
             let d = try AES(key: keyData,
                             blockMode: CBC(iv: hexToByteArray(hex: "00000000000000000000000000000000")),
@@ -687,6 +681,18 @@ extension BLEListViewController: IDT_VP3300_Delegate {
             print(hexToByteArray(hex: key))
             
             print(d.toHexString())
+            print(decrypto.hexToAscii(hex: d.toHexString()))
+            
+            let ccString = decrypto.hexToAscii(hex: d.toHexString())
+            
+            let alert = UIAlertController(
+                title: "Got it!",
+                message: ccString,
+                preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            
+            self.present(alert, animated: true)
         } catch {
             print(error)
         }
@@ -717,11 +723,13 @@ extension BLEListViewController: IDT_VP3300_Delegate {
             .sharedController()
             .device_disableBLEDeviceSearch()
         
-        
+        listeningButton.isEnabled = true
     }
     
     func deviceDisconnected() {
         print("DEVICE DISCONNECTED")
+        
+        listeningButton.isEnabled = false
     }
     
     
