@@ -381,14 +381,21 @@ class BLEListViewController: UIViewController {
         IDT_VP3300
             .sharedController()
             .emv_disableAutoAuthenticateTransaction(false)
-        
+         
+        /**
+         * 0xDFEE1A [N*SIZE OF TAG][TAG1][TAG2]...[TAGN]
+         *
+         */
+//        let dt = NSData(bytes: [0xDF, 0xEE, 0x1A, 0x03, 0xDF, 0xEE, 0x12] as [UInt8], length: 7)
+        let TLVstring = "DFEE1A03DFEE12"
+        let TLV = IDTUtility.hex(toData: TLVstring)
         let rt = IDT_VP3300
             .sharedController()
             .device_startTransaction(1.00,
                                      amtOther: 0,
                                      type: 0,
                                      timeout: 60,
-                                     tags: nil,
+                                     tags: TLV,
                                      forceOnline: false,
                                      fallback: true)
         
@@ -414,6 +421,10 @@ class BLEListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let dt = NSData(bytes: [0x7F, 0x00, 0x00] as [UInt8], length: 3)
+        print(dt.description)
+        
         connectButton.isEnabled = false
         listeningButton.isEnabled = false
         
@@ -557,11 +568,19 @@ extension BLEListViewController: IDT_VP3300_Delegate {
             print("Masked Tags: \(cardData.maskedTags.description)")
         }
     }
-    
+
     func emvTransactionData(_ emvData: IDTEMVData!, errorCode error: Int32) {
         
         var loopData = true
         let autocompleteStatus = true
+        
+        print("RES CODE V1: \(String(emvData.resultCode.rawValue, radix: 16))")
+        print("RES CODE V2: \(String(emvData.resultCodeV2.rawValue, radix: 16))")
+        
+//        var terminalData: NSDictionary?
+//        IDT_VP3300.sharedController().emv_retrieveTerminalData(&terminalData)
+//        IDT_VP3300.sharedController().emv_retrieveTransactionResult()
+//        print(terminalData?.description)
         
         if emvData.resultCodeV2 == EMV_RESULT_CODE_V2_TIME_OUT {
             
@@ -607,6 +626,23 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         
         if emvData.unencryptedTags != nil {
             print("Unencrypted Tags: \(emvData.unencryptedTags.description)")
+            
+            if(emvData.cardData == nil) {
+                let ksnData = emvData.unencryptedTags["FFEE12"] as? Data
+                
+                if (ksnData != nil) {
+                    let track2DataCandidate = emvData.unencryptedTags["DFEF4D"] as? Data
+                    if (track2DataCandidate != nil) {
+                        let dataHex = track2DataCandidate!.hexEncodedString()
+                            .replacingOccurrences(of: " ", with: "")
+                        let keyHex = ksnData!.hexEncodedString()
+                            .replacingOccurrences(of: " ", with: "")
+                        
+                        tryParse(encryptedData: dataHex, key: keyHex)
+                    }
+                }
+            }
+            
         }
         
         if emvData.encryptedTags != nil {
@@ -630,21 +666,6 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         }
         
         if (emvData.cardData != nil) {
-            
-//            let ksn = emvData.cardData.ksn != nil ? emvData.cardData.ksn.hexEncodedString() : "nth"
-//            let ses = emvData.cardData.sessionID != nil ? emvData.cardData.sessionID.hexEncodedString() : "nth"
-//            let rsn = emvData.cardData.rsn != nil ? emvData.cardData.rsn : "nth"
-//
-            print("STATUS:  \(emvData.cardData.readStatus)")
-            
-            print("-------- RAW DATA --------")
-            print(emvData.cardData.cardData.hexEncodedString())
-            
-            print("-------- RAW DATA CMPLX --------")
-            print(emvData.cardData.track1)
-            print(emvData.cardData.track2)
-
-            
             tryParse(encryptedData: emvData.cardData!.encTrack2.hexEncodedString(),
                      key: emvData.cardData!.ksn.hexEncodedString())
         }
@@ -722,12 +743,38 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         IDT_VP3300
             .sharedController()
             .device_disableBLEDeviceSearch()
+      
         
+        let TLVstring = "5F360102DFEF4B037f7f7f"
+//        "5F360102"
+        let TLV = IDTUtility.hex(toData: TLVstring)
+        let rt = IDT_VP3300.sharedController().emv_setTerminalData(IDTUtility.tlVtoDICT(TLV))
+        print("IDTUtility.tlVtoDICT(TLV): \(IDTUtility.tlVtoDICT(TLV))")
+        if RETURN_CODE_DO_SUCCESS == rt {
+            print("GOOOD")
+        } else {
+            print("OUPS: \(String(rt.rawValue, radix: 16))")
+        }
+        
+//        var result: NSDictionary?
+//        let rt = IDT_VP3300.sharedController().emv_retrieveTerminalData(&result)
+//
+//        if RETURN_CODE_DO_SUCCESS == rt {
+//            let res = IDTUtility.dicTotTLV(result as! [AnyHashable: Any])
+//            print("---------")
+//            print(result)
+//            print("---------")
+//            print(res)
+//        } else {
+//            print("Oh FUUUCK...")
+//        }
+
         listeningButton.isEnabled = true
     }
     
     func deviceDisconnected() {
         print("DEVICE DISCONNECTED")
+        
         
         listeningButton.isEnabled = false
     }
