@@ -9,362 +9,6 @@ import CoreBluetooth
 import UIKit
 import CryptoSwift
 
-extension Collection {
-    var pairs: [SubSequence] {
-        var start = startIndex
-        return (0...count/2).map { _ in
-            let end = index(start, offsetBy: 2, limitedBy: endIndex) ?? endIndex
-            defer { start = end }
-            return self[start..<Swift.min(end, endIndex)]
-        }
-    }
-}
-
-extension Data {
-    struct HexEncodingOptions: OptionSet {
-        let rawValue: Int
-        static let upperCase = HexEncodingOptions(rawValue: 1 << 0)
-    }
-    
-    func hexEncodedString(options: HexEncodingOptions = []) -> String {
-        let format = options.contains(.upperCase) ? "%02hhX" : "%02hhx"
-        return map { String(format: format, $0) }.joined(separator: " ")
-    }
-    
-    init?(hexString: String) {
-        let len = hexString.count / 2
-        var data = Data(capacity: len)
-        for i in 0..<len {
-            let j = hexString.index(hexString.startIndex, offsetBy: i*2)
-            let k = hexString.index(j, offsetBy: 2)
-            let bytes = hexString[j..<k]
-            if var num = UInt8(bytes, radix: 16) {
-                data.append(&num, count: 1)
-            } else {
-                return nil
-            }
-        }
-        self = data
-    }
-}
-
-class Decrypto {
-
-    func expand3DESKey(hex: String) -> String{
-        if (hex.count == 48) {
-            return hex
-        }
-        
-        let expandBy = 48 - hex.count
-        return hex + hex.prefix(expandBy)
-    }
-    
-    func extendBDK(bdk: String) -> String {
-        /**
-         * 24bit long key is in fact a hex with lenght of 48
-         */
-        if (bdk.count == 48) {
-            return bdk
-        }
-        
-        if (bdk.count < 48) {
-            let offset = 48 - bdk.count
-            let copy = bdk.prefix(offset)
-            
-            return bdk + copy
-        }
-        
-        return bdk
-    }
-    
-    func hexToByteArray(hex: String) -> [UInt8] {
-        return hex.pairs.filter({$0 != ""}).map({ UInt8($0, radix: 16)! })
-    }
-    
-    func hexToBinaryData(hex: String) -> String {
-        return hex.pairs.filter({$0 != ""})
-            .map({ String(UnicodeScalar(UInt8($0, radix: 16)!)) })
-            .reduce("", { return $0 + $1 })
-    }
-    
-    func hexToAscii(hex: String) -> String {
-        let chars = hex.pairs.filter({$0 != ""})
-            .map({ Character(UnicodeScalar(UInt8($0, radix: 16)!)) })
-        return String(chars)
-    }
-    
-    
-    func binaryDataToHexString(bytes: [UInt8]) -> String {
-        return bytes.reduce("", {
-            var v = String($1, radix: 16, uppercase: true)
-            if (v.count == 1) {
-                v = "0" + v;
-            }
-            
-            return $0 + v
-        })
-    }
-    
-    func binaryXOR(_ firstHex: String, _ secondHex: String) -> [UInt8] {
-        var data1 = hexToByteArray(hex: firstHex)
-        var data2 = hexToByteArray(hex: secondHex)
-        
-        if ( data1.count < data2.count) {
-            while (data1.count < data2.count) {
-                data1.insert(0, at: 0)
-            }
-        }
-        
-        if ( data2.count < data1.count) {
-            while (data2.count < data1.count) {
-                data2.insert(0, at: 0)
-            }
-        }
-        
-        var bytes = [UInt8]()
-        for item in 0..<data1.count {
-            bytes.insert(data1[item] ^ data2[item], at: item)
-        }
-        
-        return bytes
-    }
-    
-    func binaryAnd(_ firstHex: String, _ secondHex: String) -> [UInt8] {
-        var data1 = hexToByteArray(hex: firstHex)
-        var data2 = hexToByteArray(hex: secondHex)
-        
-        if ( data1.count < data2.count) {
-            while (data1.count < data2.count) {
-                data1.insert(0, at: 0)
-            }
-        }
-        
-        if ( data2.count < data1.count) {
-            while (data2.count < data1.count) {
-                data2.insert(0, at: 0)
-            }
-        }
-        
-        var bytes = [UInt8]()
-        for item in 0..<data1.count {
-            bytes.insert(data1[item] & data2[item], at: item)
-        }
-        
-        return bytes
-    }
-    
-    /**
-     * Get the counter bits from your original (not masked!) 10-byte KSN
-     * by ANDing its bottom three bytes with 0x1FFFFF.
-     * (Recall that the bottom 21 bits of a KSN comprise the transaction counter.)
-     */
-    func getCounterBits(ksnHex: String) -> [UInt8] {
-        let bottomThree = Array(hexToByteArray(hex: ksnHex).suffix(3))
-        
-        return binaryAnd(binaryDataToHexString(bytes: bottomThree), "1FFFFF")
-    }
-    
-    func getKey(bdkHex: String, ksnHex: String) -> String {
-        let IPEK = getIPEK(bdkHex: bdkHex, ksnHex: ksnHex)
-        let derivedKey = deriveKey(ksnHex: ksnHex, ipekHex: IPEK)
-        
-        let initialVector: [UInt8] = hexToByteArray(hex: "0000000000000000")
-        let dataMask = "0000000000FF00000000000000FF0000"
-        let maskedKey = binaryXOR(dataMask, derivedKey)
-        
-        let expandedMaskedKey = hexToByteArray(hex: expand3DESKey(hex: binaryDataToHexString(bytes: maskedKey)))
-        
-        let left = Array(desEncrypt(data: Array(maskedKey.prefix(8)),
-                              keyData: expandedMaskedKey,
-                              iv: initialVector)!.prefix(8))
-        
-        let right = Array(desEncrypt(data: Array(maskedKey.suffix(8)),
-                               keyData: expandedMaskedKey,
-                               iv: initialVector)!.prefix(8))
-        
-        
-        return binaryDataToHexString(bytes: (left + right))
-    }
-    
-    func deriveKey(ksnHex: String, ipekHex: String) -> String {
-        
-        let bottomEightFromKSN = Array(hexToByteArray(hex: ksnHex).suffix(8))
-        let baseKSN = binaryAnd("FFFFFFFFFFE00000", binaryDataToHexString(bytes: bottomEightFromKSN))
-        
-        let counter = getCounterBits(ksnHex: ksnHex)
-        var currKey = ipekHex
-        
-        let counterInt = Int(binaryDataToHexString(bytes: counter), radix: 16)!
-        var baseKSNInt = Int(binaryDataToHexString(bytes: baseKSN), radix: 16)!
-        
-        
-        var shiftReg = 0x100000
-        var pass = 0
-        
-        while(shiftReg > 0) {
-            if ((shiftReg & counterInt) > 0) {
-                baseKSNInt |= shiftReg
-                currKey = binaryDataToHexString(
-                    bytes: generateKey(key: currKey, ksn: String(format:"%llX", baseKSNInt)));
-                
-                let ksnHex = String(format:"%llX", baseKSNInt)
-                let keyHex = currKey
-                
-                print("Pass \(pass), baseKSN:\(ksnHex) key: \(keyHex)")
-                
-                pass += 1
-            }
-            
-            shiftReg >>= 1
-        }
-        
-        return currKey
-    }
-    
-    func generateKey(key: String, ksn: String) -> [UInt8] {
-        let mask = "C0C0C0C000000000C0C0C0C000000000"
-        let maskedKey =  binaryXOR(mask, key);
-        
-        let left  = encryptRegister(key: maskedKey, ksn: hexToByteArray(hex: ksn));
-        let right = encryptRegister(key: hexToByteArray(hex: key), ksn: hexToByteArray(hex: ksn));
-
-        return left + right
-    }
-    
-    func encryptRegister(key: [UInt8], ksn: [UInt8]) -> [UInt8] {
-        let bottomEight = Array(key.suffix(8))
-        let topEight = Array(key.prefix(8))
-        let initialVector: [UInt8] = hexToByteArray(hex: "0000000000000000")
-        let bottomEightXORKSN = binaryXOR(binaryDataToHexString(bytes: bottomEight),
-                                          binaryDataToHexString(bytes: ksn))
-        let desEncrypted = Array(singleDesEncrypt(data: bottomEightXORKSN,
-                                            keyData: topEight,
-                                            iv: initialVector)!.prefix(8))
-        
-        return binaryXOR(binaryDataToHexString(bytes: bottomEight),
-                         binaryDataToHexString(bytes: desEncrypted))
-    }
-    
-    func getIPEK(bdkHex: String, ksnHex: String) -> String {
-        
-        let extendedBdk = extendBDK(bdk: bdkHex)
-        let maskedKSN = binaryAnd(ksnHex, "FFFFFFFFFFFFFFE00000")
-        
-        let bytesDate: [UInt8] = hexToByteArray(hex: binaryDataToHexString(bytes:maskedKSN))
-        let keyData: [UInt8] = hexToByteArray(hex: extendedBdk)
-        let initialVector: [UInt8] = hexToByteArray(hex: "0000000000000000")
-        let leftIPEK = desEncrypt(data: bytesDate,
-                                  keyData: keyData,
-                                  iv: initialVector)!
-        //take only 8 bytes
-        let leftHalfOfIPEK = Array(leftIPEK[..<8])
-        
-        let xorKey = binaryXOR(bdkHex, "C0C0C0C000000000C0C0C0C000000000")
-        let xorExpandedKey = hexToByteArray(
-            hex: expand3DESKey(hex: binaryDataToHexString(bytes: xorKey)))
-        
-        let rightIPEK = desEncrypt(data: maskedKSN,
-                                   keyData: xorExpandedKey,
-                                   iv: initialVector)!
-        //take only 8 bytes
-        let rightHalfOfIPEK = Array(rightIPEK[..<8])
-        
-        let IPEK = leftHalfOfIPEK + rightHalfOfIPEK
-
-        return binaryDataToHexString(bytes: IPEK)
-    }
-    
-    func decryptAES() {
-        
-        let encryptedData = ""
-        let key = ""
-        
-        do {
-            let bytesDate: [UInt8] = hexToByteArray(hex: encryptedData)
-            let keyData: [UInt8] = hexToByteArray(hex: key)
-            
-            let d = try AES(key: keyData,
-                            blockMode: CBC(iv: hexToByteArray(hex: "00000000000000000000000000000000")),
-                            padding: .noPadding)
-                .decrypt(bytesDate)
-            
-            print("D: \(d)")
-            
-        } catch {
-            print(error)
-        }
-    }
-    
-    
-    func singleDesEncrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) -> [UInt8]? {
-        let cryptData = NSMutableData(
-            length: Int(data.count) + kCCBlockSizeDES)!
-        let keyLength              = size_t(kCCKeySizeDES)
-        let operation: CCOperation = UInt32(kCCEncrypt)
-        let algoritm:  CCAlgorithm = UInt32(kCCAlgorithmDES)
-        let options:   CCOptions   = UInt32(kCCOptionECBMode + kCCOptionPKCS7Padding)
-        
-        var numBytesEncrypted :size_t = 0
-        
-        let cryptStatus = CCCrypt(operation,
-                                  algoritm,
-                                  options,
-                                  keyData,
-                                  keyLength,
-                                  iv,
-                                  data,
-                                  data.count,
-                                  cryptData.mutableBytes,
-                                  cryptData.length,
-                                  &numBytesEncrypted)
-        
-        
-        if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-            cryptData.length = Int(numBytesEncrypted)
-            
-            return [UInt8](cryptData as Data)
-            
-        } else {
-            print("Error: \(cryptStatus)")
-        }
-        return nil
-    }
-    
-    func desEncrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) -> [UInt8]? {
-        let cryptData = NSMutableData(
-            length: Int(data.count) + kCCBlockSize3DES)!
-        let keyLength              = size_t(kCCKeySize3DES)
-        let operation: CCOperation = UInt32(kCCEncrypt)
-        let algoritm:  CCAlgorithm = UInt32(kCCAlgorithm3DES)
-        let options:   CCOptions   = UInt32(kCCOptionECBMode + kCCOptionPKCS7Padding)
-        
-        var numBytesEncrypted :size_t = 0
-        
-        let cryptStatus = CCCrypt(operation,
-                                  algoritm,
-                                  options,
-                                  keyData,
-                                  keyLength,
-                                  iv,
-                                  data,
-                                  data.count,
-                                  cryptData.mutableBytes,
-                                  cryptData.length,
-                                  &numBytesEncrypted)
-        
-        
-        if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-            cryptData.length = Int(numBytesEncrypted)
-            
-            return [UInt8](cryptData as Data)
-            
-        } else {
-            print("Error: \(cryptStatus)")
-        }
-        return nil
-    }
-}
-
 class BLEListViewController: UIViewController {
     var devices: Set<BLEDevice> = []
     var centralManager: CBCentralManager!
@@ -377,16 +21,10 @@ class BLEListViewController: UIViewController {
     
     
     @IBAction func startListeningLoop(_ sender: UIButton) {
-        
-        IDT_VP3300
-            .sharedController()
-            .emv_disableAutoAuthenticateTransaction(false)
-         
         /**
          * 0xDFEE1A [N*SIZE OF TAG][TAG1][TAG2]...[TAGN]
          *
          */
-//        let dt = NSData(bytes: [0xDF, 0xEE, 0x1A, 0x03, 0xDF, 0xEE, 0x12] as [UInt8], length: 7)
         let TLVstring = "DFEE1A03DFEE12"
         let TLV = IDTUtility.hex(toData: TLVstring)
         let rt = IDT_VP3300
@@ -421,9 +59,6 @@ class BLEListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let dt = NSData(bytes: [0x7F, 0x00, 0x00] as [UInt8], length: 3)
-        print(dt.description)
         
         connectButton.isEnabled = false
         listeningButton.isEnabled = false
@@ -524,7 +159,7 @@ extension BLEListViewController: CBCentralManagerDelegate, CBPeripheralDelegate 
         
         if (self.devices.count != prevCount) {
             self.tableView.reloadData()
-            //            print("REFRESHING...")
+            print("REFRESHING...")
         }
     }
 }
@@ -577,11 +212,6 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         print("RES CODE V1: \(String(emvData.resultCode.rawValue, radix: 16))")
         print("RES CODE V2: \(String(emvData.resultCodeV2.rawValue, radix: 16))")
         
-//        var terminalData: NSDictionary?
-//        IDT_VP3300.sharedController().emv_retrieveTerminalData(&terminalData)
-//        IDT_VP3300.sharedController().emv_retrieveTransactionResult()
-//        print(terminalData?.description)
-        
         if emvData.resultCodeV2 == EMV_RESULT_CODE_V2_TIME_OUT {
             
         }
@@ -633,6 +263,26 @@ extension BLEListViewController: IDT_VP3300_Delegate {
                 if (ksnData != nil) {
                     let track2DataCandidate = emvData.unencryptedTags["DFEF4D"] as? Data
                     if (track2DataCandidate != nil) {
+                        
+                        let ret = IDT_VP3300
+                            .sharedController()
+                            .emv_completeOnlineEMVTransaction(true,
+                                                              hostResponseTags: Data(bytes: [0xDF, 0xEE, 0x1B] as [UInt8]))
+                        
+                        let TLVstring = "DFEE12"
+                        let TLV = IDTUtility.hex(toData: TLVstring)
+                        
+                        var data: NSDictionary?
+                        let ret2 = IDT_VP3300
+                            .sharedController()
+                            .emv_retrieveTransactionResult(TLV, retrievedTags: &data)
+                        
+                        
+                        print("--------------------------------")
+//                        print("RET VAL: \(String(ret.rawValue,radix: 16)) \(String(ret2.rawValue,radix: 16))")
+                        print("DATA: \(data)")
+                        print("--------------------------------")
+                        
                         let dataHex = track2DataCandidate!.hexEncodedString()
                             .replacingOccurrences(of: " ", with: "")
                         let keyHex = ksnData!.hexEncodedString()
@@ -668,6 +318,21 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         if (emvData.cardData != nil) {
             tryParse(encryptedData: emvData.cardData!.encTrack2.hexEncodedString(),
                      key: emvData.cardData!.ksn.hexEncodedString())
+            
+            let TLVstring = "DFEE12"
+            let TLV = IDTUtility.hex(toData: TLVstring)
+            
+            
+            var data: NSDictionary?
+            let ret2 = IDT_VP3300
+                .sharedController()
+                .emv_retrieveTransactionResult(TLV, retrievedTags: &data)
+            
+            
+            print("--------------------------------")
+            print("RET VAL: \(String(ret2.rawValue,radix: 16))")
+            print("DATA: \(data)")
+            print("--------------------------------")
         }
     }
     
@@ -686,6 +351,7 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         do {
             let bytesDate: [UInt8] = hexToByteArray(hex: encryptedData)
             let ksn = key.replacingOccurrences(of: " ", with: "")
+            
             let bdk = "0123456789ABCDEFFEDCBA9876543210"
 
             let decrypto = Decrypto()
@@ -719,18 +385,18 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         }
     }
     
-    func EDE3KeyExpand(key: String ) -> String {
-        switch key.count {
-        case 16:
-            let index = key.index(key.startIndex,
-                                  offsetBy: key.count/2)
-            return key + String(key[..<index])
-        case 24:
-            return key
-        default:
-            return ""
-        }
-    }
+//    func EDE3KeyExpand(key: String ) -> String {
+//        switch key.count {
+//        case 16:
+//            let index = key.index(key.startIndex,
+//                                  offsetBy: key.count/2)
+//            return key + String(key[..<index])
+//        case 24:
+//            return key
+//        default:
+//            return ""
+//        }
+//    }
     
     func hexstringToData(hex: String) -> Data {
         return Data(hexString: hex)!
@@ -756,19 +422,6 @@ extension BLEListViewController: IDT_VP3300_Delegate {
             print("OUPS: \(String(rt.rawValue, radix: 16))")
         }
         
-//        var result: NSDictionary?
-//        let rt = IDT_VP3300.sharedController().emv_retrieveTerminalData(&result)
-//
-//        if RETURN_CODE_DO_SUCCESS == rt {
-//            let res = IDTUtility.dicTotTLV(result as! [AnyHashable: Any])
-//            print("---------")
-//            print(result)
-//            print("---------")
-//            print(res)
-//        } else {
-//            print("Oh FUUUCK...")
-//        }
-
         listeningButton.isEnabled = true
     }
     

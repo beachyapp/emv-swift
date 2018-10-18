@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5F795A6390B13C7FEC80E512 /* Pods_EMV_reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */; };
+		E7281CAB2178DC1A0069B633 /* DecryptionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */; };
+		E7281CAE2178DDA90069B633 /* Collection+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CAD2178DDA90069B633 /* Collection+Hex.swift */; };
+		E7281CB02178DDE50069B633 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CAF2178DDE50069B633 /* Data+Hex.swift */; };
 		E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7322D99216E639B003773AC /* IDTech.framework */; };
 		E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */; };
 		E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */; };
@@ -23,6 +26,9 @@
 		1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMV_reader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader.debug.xcconfig"; sourceTree = "<group>"; };
 		37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMV_reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader.release.xcconfig"; sourceTree = "<group>"; };
 		DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EMV_reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptionUtility.swift; sourceTree = "<group>"; };
+		E7281CAD2178DDA90069B633 /* Collection+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Hex.swift"; sourceTree = "<group>"; };
+		E7281CAF2178DDE50069B633 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 		E7322D99216E639B003773AC /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "../../Downloads/80149808-001-B/Source/Swift/VP3300_Test_App/IDTech.framework"; sourceTree = "<group>"; };
 		E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IDTech-Bridging-Header.h"; sourceTree = "<group>"; };
 		E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceTableViewCell.swift; sourceTree = "<group>"; };
@@ -60,6 +66,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		E7281CAC2178DD760069B633 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E7281CAD2178DDA90069B633 /* Collection+Hex.swift */,
+				E7281CAF2178DDE50069B633 /* Data+Hex.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		E7C92EB1216D0B2700B444BA = {
 			isa = PBXGroup;
 			children = (
@@ -81,11 +96,13 @@
 		E7C92EBC216D0B2800B444BA /* EMV_reader */ = {
 			isa = PBXGroup;
 			children = (
+				E7281CAC2178DD760069B633 /* Extensions */,
 				E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */,
 				E7C92EBD216D0B2800B444BA /* AppDelegate.swift */,
 				E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */,
 				E7C92EC1216D0B2800B444BA /* Main.storyboard */,
 				E79B8D3B216E062600D35E93 /* BLEListViewController.swift */,
+				E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */,
 				E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */,
 				E7C92EC4216D0B2900B444BA /* Assets.xcassets */,
 				E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */,
@@ -217,8 +234,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */,
+				E7281CAB2178DC1A0069B633 /* DecryptionUtility.swift in Sources */,
 				E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */,
+				E7281CAE2178DDA90069B633 /* Collection+Hex.swift in Sources */,
 				E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */,
+				E7281CB02178DDE50069B633 /* Data+Hex.swift in Sources */,
 				E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

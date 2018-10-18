@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EMV_reader/BLEListViewController.swift"
-            timestampString = "561474421.091784"
+            timestampString = "561569871.285148"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "691"
-            endingLineNumber = "691"
+            startingLineNumber = "357"
+            endingLineNumber = "357"
             landmarkName = "tryParse(encryptedData:key:)"
             landmarkType = "7">
          </BreakpointContent>
