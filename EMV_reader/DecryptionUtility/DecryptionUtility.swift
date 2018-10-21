@@ -8,6 +8,17 @@
 
 import Foundation
 
+enum EncryptionMode {
+    case ENCRYPT
+    case DECRYPT
+}
+
+enum EncyptionAlgorithm {
+    case AES
+    case TDES
+    case DES
+}
+
 class DecryptionUtility {
     
     static func expand3DESKey(hex: String) -> String {
@@ -37,19 +48,19 @@ class DecryptionUtility {
         return bdk
     }
     
-    //DEPRECATED
-    static func hexToBinaryData(hex: String) -> String {
-        return hex.pairs.filter({$0 != ""})
-            .map({ String(UnicodeScalar(UInt8($0, radix: 16)!)) })
-            .reduce("", { return $0 + $1 })
-    }
-    
-    //DEPRECATED
-    static func hexToAscii(hex: String) -> String {
-        let chars = hex.pairs.filter({$0 != ""})
-            .map({ Character(UnicodeScalar(UInt8($0, radix: 16)!)) })
-        return String(chars)
-    }
+//    //DEPRECATED
+//    static func hexToBinaryData(hex: String) -> String {
+//        return hex.pairs.filter({$0 != ""})
+//            .map({ String(UnicodeScalar(UInt8($0, radix: 16)!)) })
+//            .reduce("", { return $0 + $1 })
+//    }
+//
+//    //DEPRECATED
+//    static func hexToAscii(hex: String) -> String {
+//        let chars = hex.pairs.filter({$0 != ""})
+//            .map({ Character(UnicodeScalar(UInt8($0, radix: 16)!)) })
+//        return String(chars)
+//    }
     
     
     static func binaryXOR(_ firstHex: String, _ secondHex: String) -> [UInt8] {
@@ -158,9 +169,9 @@ class DecryptionUtility {
         return binaryAnd(bottomThree.toHexString(), "1FFFFF")
     }
     
-    static func getKey(bdkHex: String, ksnHex: String) -> String {
-        let IPEK = getIPEK(bdkHex: bdkHex, ksnHex: ksnHex)
-        let derivedKey = deriveKey(ksnHex: ksnHex, ipekHex: IPEK)
+    static func getKey(bdkHex: String, ksnHex: String) throws -> String {
+        let IPEK = try getIPEK(bdkHex: bdkHex, ksnHex: ksnHex)
+        let derivedKey = try deriveKey(ksnHex: ksnHex, ipekHex: IPEK)
         
         let initialVector: [UInt8] = [UInt8](hexString: "0000000000000000")
         let dataMask = "0000000000FF00000000000000FF0000"
@@ -168,11 +179,11 @@ class DecryptionUtility {
         
         let expandedMaskedKey = [UInt8](hexString: DecryptionUtility.expand3DESKey(hex: maskedKey.toHexString()))
         
-        let left = Array(desEncrypt(data: Array(maskedKey.prefix(8)),
+        let left = Array(try desEncrypt(data: Array(maskedKey.prefix(8)),
                                     keyData: expandedMaskedKey,
                                     iv: initialVector)!.prefix(8))
         
-        let right = Array(desEncrypt(data: Array(maskedKey.suffix(8)),
+        let right = Array(try desEncrypt(data: Array(maskedKey.suffix(8)),
                                      keyData: expandedMaskedKey,
                                      iv: initialVector)!.prefix(8))
         
@@ -180,7 +191,7 @@ class DecryptionUtility {
         return Array((left + right)).toHexString()
     }
     
-    static func deriveKey(ksnHex: String, ipekHex: String) -> String {
+    static func deriveKey(ksnHex: String, ipekHex: String) throws -> String {
         
         let bottomEightFromKSN = Array([UInt8](hexString: ksnHex).suffix(8))
         let baseKSN = binaryAnd("FFFFFFFFFFE00000", bottomEightFromKSN.toHexString())
@@ -198,7 +209,7 @@ class DecryptionUtility {
         while(shiftReg > 0) {
             if ((shiftReg & counterInt) > 0) {
                 baseKSNInt |= shiftReg
-                currKey = generateKey(
+                currKey = try generateKey(
                     key: currKey,
                     ksn: String(format:"%llX", baseKSNInt)
                 ).toHexString();
@@ -217,38 +228,39 @@ class DecryptionUtility {
         return currKey
     }
     
-    static func generateKey(key: String, ksn: String) -> [UInt8] {
+    static func generateKey(key: String, ksn: String) throws -> [UInt8] {
         let mask = "C0C0C0C000000000C0C0C0C000000000"
         let maskedKey =  binaryXOR(mask, key);
         
-        let left  = encryptRegister(key: maskedKey, ksn: [UInt8](hexString: ksn));
-        let right = encryptRegister(key: [UInt8](hexString: key), ksn: [UInt8](hexString: ksn));
+        let left  = try encryptRegister(key: maskedKey,
+                                        ksn: [UInt8](hexString: ksn));
+        let right = try encryptRegister(key: [UInt8](hexString: key),
+                                        ksn: [UInt8](hexString: ksn));
         
         return left + right
     }
     
-    static func encryptRegister(key: [UInt8], ksn: [UInt8]) -> [UInt8] {
+    static func encryptRegister(key: [UInt8], ksn: [UInt8]) throws -> [UInt8] {
         let bottomEight = Array(key.suffix(8))
         let topEight = Array(key.prefix(8))
         let initialVector: [UInt8] = [UInt8](hexString: "0000000000000000")
         let bottomEightXORKSN = binaryXOR(bottomEight, ksn)
-        let desEncrypted = Array(singleDesEncrypt(data: bottomEightXORKSN,
+        let desEncrypted = Array(try singleDesEncrypt(data: bottomEightXORKSN,
                                                   keyData: topEight,
                                                   iv: initialVector)!.prefix(8))
         
         return binaryXOR(bottomEight, desEncrypted)
     }
     
-    static func getIPEK(bdkHex: String, ksnHex: String) -> String {
+    static func getIPEK(bdkHex: String, ksnHex: String) throws -> String {
         
         let extendedBdk = DecryptionUtility.extendBDK(bdk: bdkHex)
         let maskedKSN = binaryAnd(ksnHex, "FFFFFFFFFFFFFFE00000")
         
-//        let bytesDate: [UInt8] = [UInt8](hexString: binaryDataToHexString(bytes:maskedKSN))
         let bytesDate = maskedKSN
         let keyData: [UInt8] = [UInt8](hexString: extendedBdk)
         let initialVector: [UInt8] = [UInt8](hexString: "0000000000000000")
-        let leftIPEK = desEncrypt(data: bytesDate,
+        let leftIPEK = try desEncrypt(data: bytesDate,
                                   keyData: keyData,
                                   iv: initialVector)!
         //take only 8 bytes
@@ -256,31 +268,59 @@ class DecryptionUtility {
         
         let xorKey = binaryXOR(bdkHex, "C0C0C0C000000000C0C0C0C000000000")
         let xorExpandedKey = [UInt8](
-            hex: DecryptionUtility.expand3DESKey(hex: xorKey.toHexString()))
+            hexString: DecryptionUtility.expand3DESKey(hex: xorKey.toHexString()))
         
-        let rightIPEK = desEncrypt(data: maskedKSN,
+        
+        let rightIPEK = try desEncrypt(data: maskedKSN,
                                    keyData: xorExpandedKey,
                                    iv: initialVector)!
-        //take only 8 bytes
         let rightHalfOfIPEK = Array(rightIPEK[..<8])
-        
         let IPEK = leftHalfOfIPEK + rightHalfOfIPEK
         
         return IPEK.toHexString()
+//        } catch {
+//            fatalError(error.localizedDescription)
+//        }
     }
     
-    static func singleDesEncrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) -> [UInt8]? {
-        let cryptData = NSMutableData(
-            length: Int(data.count) + kCCBlockSizeDES)!
-        let keyLength              = size_t(kCCKeySizeDES)
-        let operation: CCOperation = UInt32(kCCEncrypt)
-        let algoritm:  CCAlgorithm = UInt32(kCCAlgorithmDES)
-        let options:   CCOptions   = UInt32(kCCOptionECBMode + kCCOptionPKCS7Padding)
+    static func parseData(data: [UInt8],
+                    keyData: [UInt8],
+                    iv: [UInt8],
+                    mode: EncryptionMode,
+                    algorythm: EncyptionAlgorithm,
+                    options: CCOptions = UInt32(kCCOptionECBMode + kCCOptionPKCS7Padding)) throws -> [UInt8]? {
+        var blockSize: Int = Int(data.count)
+        var operation: CCOperation
+        var algorithm:  CCAlgorithm
+        var keyLength: Int
+        
+        switch algorythm {
+        case .AES:
+            blockSize += kCCBlockSizeAES128
+            keyLength = size_t(kCCKeySizeAES128)
+            algorithm = UInt32(kCCAlgorithmAES128)
+        case .DES:
+            blockSize += kCCBlockSizeDES
+            keyLength = size_t(kCCKeySizeDES)
+            algorithm = UInt32(kCCAlgorithmDES)
+        case .TDES:
+            blockSize += kCCBlockSize3DES
+            keyLength = size_t(kCCKeySize3DES)
+            algorithm = UInt32(kCCAlgorithm3DES)
+        }
+        
+        switch mode {
+        case .DECRYPT:
+            operation = UInt32(kCCDecrypt)
+        case .ENCRYPT:
+            operation = UInt32(kCCEncrypt)
+        }
         
         var numBytesEncrypted :size_t = 0
         
+        let cryptData = NSMutableData(length: blockSize)!
         let cryptStatus = CCCrypt(operation,
-                                  algoritm,
+                                  algorithm,
                                   options,
                                   keyData,
                                   keyLength,
@@ -298,74 +338,23 @@ class DecryptionUtility {
             return [UInt8](cryptData as Data)
             
         } else {
-            print("Error: \(cryptStatus)")
+            fatalError("Unable to parse card data: \(cryptStatus)")
         }
+        
         return nil
     }
     
-    static func desEncrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) -> [UInt8]? {
-        let cryptData = NSMutableData(
-            length: Int(data.count) + kCCBlockSize3DES)!
-        let keyLength              = size_t(kCCKeySize3DES)
-        let operation: CCOperation = UInt32(kCCEncrypt)
-        let algoritm:  CCAlgorithm = UInt32(kCCAlgorithm3DES)
-        let options:   CCOptions   = UInt32(kCCOptionECBMode + kCCOptionPKCS7Padding)
-        
-        var numBytesEncrypted :size_t = 0
-        
-        let cryptStatus = CCCrypt(operation,
-                                  algoritm,
-                                  options,
-                                  keyData,
-                                  keyLength,
-                                  iv,
-                                  data,
-                                  data.count,
-                                  cryptData.mutableBytes,
-                                  cryptData.length,
-                                  &numBytesEncrypted)
-        
-        
-        if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-            cryptData.length = Int(numBytesEncrypted)
-            
-            return [UInt8](cryptData as Data)
-            
-        } else {
-            print("Error: \(cryptStatus)")
-        }
-        return nil
+    static func singleDesEncrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) throws -> [UInt8]? {
+        return try parseData(data: data, keyData: keyData, iv: iv, mode: .ENCRYPT, algorythm: .DES)
     }
     
-    static func aesDecrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) -> [UInt8]? {
-        let cryptData = NSMutableData(
-            length: Int(data.count) + kCCBlockSizeAES128)!
-        let keyLength              = size_t(kCCKeySizeAES128)
-        let operation: CCOperation = UInt32(kCCDecrypt)
-        let algoritm:  CCAlgorithm = UInt32(kCCAlgorithmAES128)
+    static func desEncrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) throws -> [UInt8]? {
+        return try parseData(data: data, keyData: keyData, iv: iv, mode: .ENCRYPT, algorythm: .TDES)
+    }
+    
+    static func aesDecrypt(data: [UInt8], keyData: [UInt8], iv: [UInt8]) throws -> [UInt8]? {
         let options:   CCOptions   = UInt32(kCCOptionECBMode + kCCOptionECBMode)
         
-        var numBytesEncrypted :size_t = 0
-
-        let cryptStatus = CCCrypt(operation,
-                                  algoritm,
-                                  options,
-                                  keyData,
-                                  keyLength,
-                                  iv,
-                                  data,
-                                  data.count,
-                                  cryptData.mutableBytes,
-                                  cryptData.length,
-                                  &numBytesEncrypted)
-        
-        if UInt32(cryptStatus) == UInt32(kCCSuccess) {
-            cryptData.length = Int(numBytesEncrypted)
-            
-            return [UInt8](cryptData as Data)
-        } else {
-            print("Error: \(cryptStatus)")
-        }
-        return nil
+        return try parseData(data: data, keyData: keyData, iv: iv, mode: .DECRYPT, algorythm: .AES, options: options)
     }
 }

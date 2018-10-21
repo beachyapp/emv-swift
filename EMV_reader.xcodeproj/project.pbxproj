@@ -14,6 +14,7 @@
 		E7281CB22179A4B90069B633 /* UInt8Array+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CB12179A4B90069B633 /* UInt8Array+Hex.swift */; };
 		E7281CB6217A30760069B633 /* BLEListViewController+EMVDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CB5217A30760069B633 /* BLEListViewController+EMVDelegate.swift */; };
 		E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7322D99216E639B003773AC /* IDTech.framework */; };
+		E739AB66217C96D300CB04C0 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E739AB65217C96D300CB04C0 /* String+Hex.swift */; };
 		E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */; };
 		E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */; };
 		E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D3B216E062600D35E93 /* BLEListViewController.swift */; };
@@ -35,6 +36,7 @@
 		E7281CB5217A30760069B633 /* BLEListViewController+EMVDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BLEListViewController+EMVDelegate.swift"; sourceTree = "<group>"; };
 		E7322D99216E639B003773AC /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "../../Downloads/80149808-001-B/Source/Swift/VP3300_Test_App/IDTech.framework"; sourceTree = "<group>"; };
 		E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IDTech-Bridging-Header.h"; sourceTree = "<group>"; };
+		E739AB65217C96D300CB04C0 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
 		E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceTableViewCell.swift; sourceTree = "<group>"; };
 		E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevice.swift; sourceTree = "<group>"; };
 		E79B8D3B216E062600D35E93 /* BLEListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -76,8 +78,28 @@
 				E7281CAD2178DDA90069B633 /* Collection+Hex.swift */,
 				E7281CAF2178DDE50069B633 /* Data+Hex.swift */,
 				E7281CB12179A4B90069B633 /* UInt8Array+Hex.swift */,
+				E739AB65217C96D300CB04C0 /* String+Hex.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E739AB68217C98F600CB04C0 /* BLEMainView */ = {
+			isa = PBXGroup;
+			children = (
+				E79B8D3B216E062600D35E93 /* BLEListViewController.swift */,
+				E7281CB5217A30760069B633 /* BLEListViewController+EMVDelegate.swift */,
+				E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */,
+				E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */,
+			);
+			path = BLEMainView;
+			sourceTree = "<group>";
+		};
+		E739AB69217C991000CB04C0 /* DecryptionUtility */ = {
+			isa = PBXGroup;
+			children = (
+				E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */,
+			);
+			path = DecryptionUtility;
 			sourceTree = "<group>";
 		};
 		E7C92EB1216D0B2700B444BA = {
@@ -101,15 +123,12 @@
 		E7C92EBC216D0B2800B444BA /* EMV_reader */ = {
 			isa = PBXGroup;
 			children = (
+				E739AB68217C98F600CB04C0 /* BLEMainView */,
 				E7281CAC2178DD760069B633 /* Extensions */,
 				E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */,
 				E7C92EBD216D0B2800B444BA /* AppDelegate.swift */,
-				E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */,
 				E7C92EC1216D0B2800B444BA /* Main.storyboard */,
-				E79B8D3B216E062600D35E93 /* BLEListViewController.swift */,
-				E7281CB5217A30760069B633 /* BLEListViewController+EMVDelegate.swift */,
-				E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */,
-				E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */,
+				E739AB69217C991000CB04C0 /* DecryptionUtility */,
 				E7C92EC4216D0B2900B444BA /* Assets.xcassets */,
 				E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */,
 				E7C92EC9216D0B2900B444BA /* Info.plist */,
@@ -241,6 +260,7 @@
 			files = (
 				E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */,
 				E7281CAB2178DC1A0069B633 /* DecryptionUtility.swift in Sources */,
+				E739AB66217C96D300CB04C0 /* String+Hex.swift in Sources */,
 				E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */,
 				E7281CAE2178DDA90069B633 /* Collection+Hex.swift in Sources */,
 				E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */,

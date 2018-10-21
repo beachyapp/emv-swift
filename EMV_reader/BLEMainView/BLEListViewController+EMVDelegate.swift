@@ -7,7 +7,6 @@
 //
 
 import Foundation
-//import CryptoSwift
 
 extension BLEListViewController: IDT_VP3300_Delegate {
     @objc func completeEMV() {
@@ -195,7 +194,7 @@ extension BLEListViewController: IDT_VP3300_Delegate {
             let ksn = key.replacingOccurrences(of: " ", with: "")
             
             let bdk = "0123456789ABCDEFFEDCBA9876543210"
-            let sessionKey = DecryptionUtility.getKey(bdkHex: bdk, ksnHex: ksn)
+            let sessionKey = try DecryptionUtility.getKey(bdkHex: bdk, ksnHex: ksn)
             let keyData = [UInt8](hexString: sessionKey)
             
 //            let d = try AES(key: keyData,
@@ -203,16 +202,13 @@ extension BLEListViewController: IDT_VP3300_Delegate {
 //                            padding: .noPadding)
 //                .decrypt(bytesDate)
 //
-            let d2 = DecryptionUtility
+            let d2 = try DecryptionUtility
                 .aesDecrypt(data: bytesDate,
                             keyData: keyData,
                             iv: [UInt8](hexString: "00000000000000000000000000000000"))!
             
-//            print(d.toHexString())
-            print(d2.toHexString())
             
-            let ccString = DecryptionUtility.hexToAscii(hex: d2.toHexString())
-            
+            let ccString = d2.toHexString().hexToAscii()
             let alert = UIAlertController(
                 title: "Got it!",
                 message: ccString,
@@ -252,6 +248,4 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         
         listeningButton.isEnabled = false
     }
-    
-    
 }
