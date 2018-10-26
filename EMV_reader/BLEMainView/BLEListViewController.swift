@@ -25,25 +25,45 @@ class BLEListViewController: UIViewController {
          * 0xDFEE1A [N*SIZE OF TAG][TAG1][TAG2]...[TAGN]
          *
          */
-        let TLVstring = "DFEE1A03DFEE12"
-        let TLV = IDTUtility.hex(toData: TLVstring)
-        let rt = IDT_VP3300
+//        let TLVstring = "DFEE1A03DFEE12"
+//        let TLV = IDTUtility.hex(toData: TLVstring)
+        IDT_VP3300
             .sharedController()
-            .device_startTransaction(1.00,
-                                     amtOther: 0,
-                                     type: 0,
-                                     timeout: 60,
-                                     tags: TLV,
-                                     forceOnline: true,
-                                     fallback: true)
+            .ctls_startTransaction()
         
-        if RETURN_CODE_DO_SUCCESS == rt {
-            printDebugMessage("Start transaction command accepted")
-            printDebugMessage(String(rt.rawValue, radix: 16))
+        if (IDT_VP3300
+            .sharedController()
+            .device_isConnected(IDT_DEVICE_VP3300_IOS)) {
+            
+            
+            IDT_VP3300.sharedController().msr_cancelMSRSwipe();
+            IDT_VP3300.sharedController().device_cancelTransaction();
+        
+            let rt = IDT_VP3300
+                .sharedController()
+                .device_startTransaction(0, amtOther: 0, type: 0, timeout: 60, tags: nil, forceOnline: false, fallback: true)
+            
+            if RETURN_CODE_DO_SUCCESS == rt {
+                printDebugMessage("Start transaction command accepted")
+                printDebugMessage(String(rt.rawValue, radix: 16))
+            } else {
+                printDebugMessage("Start EMV transaction error")
+                printDebugMessage(String(rt.rawValue, radix: 16))
+            }
         } else {
-            printDebugMessage("Start EMV transaction error")
-            printDebugMessage(String(rt.rawValue, radix: 16))
+            printDebugMessage("Not even connected?")
         }
+        
+//            .emv_startTransaction(1.00, amtOther: 0, type: 0, timeout: 60, tags: nil, forceOnline: false, fallback: true)
+//            .device_startTransaction(1.00,
+//                                     amtOther: 0,
+//                                     type: 0,
+//                                     timeout: 60,
+//                                     tags: nil,
+//                                     forceOnline: false,
+//                                     fallback: true)
+        
+       
     }
     
     @IBAction func connect(_ sender: UIButton) {

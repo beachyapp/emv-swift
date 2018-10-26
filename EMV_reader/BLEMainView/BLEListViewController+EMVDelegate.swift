@@ -19,15 +19,15 @@ extension BLEListViewController: IDT_VP3300_Delegate {
         NotificationCenter.default.post(name: Notification.Name(rawValue: "startEMV"), object: nil)
         
         print("START  EMV!");
-        let TLVstring = "DFEE12"
-        let TLV = IDTUtility.hex(toData: TLVstring)
-        
-        var data: NSDictionary?
-        let ret2 = IDT_VP3300
-            .sharedController()
-            .emv_retrieveTransactionResult(TLV, retrievedTags: &data)
-        
-        printDebugMessage("\(ret2)")
+//        let TLVstring = "DFEE12"
+//        let TLV = IDTUtility.hex(toData: TLVstring)
+//
+//        var data: NSDictionary?
+//        let ret2 = IDT_VP3300
+//            .sharedController()
+//            .emv_retrieveTransactionResult(nil, retrievedTags: &data)
+//
+//        printDebugMessage("\(ret2)")
         
 //        let ret = IDT_VP3300
 //            .sharedController()
@@ -40,6 +40,8 @@ extension BLEListViewController: IDT_VP3300_Delegate {
     }
     
     func lcdDisplay(_ mode: Int32, lines: [Any]!) {
+        print("lines: ", lines)
+        print(mode)
         printDebugMessage("LCD DISPLAY: \(String(describing: lines))")
     }
     
@@ -64,6 +66,9 @@ extension BLEListViewController: IDT_VP3300_Delegate {
     }
     
     func emvTransactionData(_ emvData: IDTEMVData!, errorCode error: Int32) {
+
+        print(" --- --- --- ")
+        print(" GOT DA DATA ")
         
         if emvData == nil {
             printDebugMessage("Error parsing card data: \(error)")
@@ -169,20 +174,20 @@ extension BLEListViewController: IDT_VP3300_Delegate {
             tryParse(encryptedData: emvData.cardData!.encTrack2.hexEncodedString(),
                      key: emvData.cardData!.ksn.hexEncodedString())
             
-            let TLVstring = "DFEE12"
-            let TLV = IDTUtility.hex(toData: TLVstring)
-            
-            
-            var data: NSDictionary?
-            let ret2 = IDT_VP3300
-                .sharedController()
-                .emv_retrieveTransactionResult(TLV, retrievedTags: &data)
-            
-            
-            printDebugMessage("--------------------------------")
-            printDebugMessage("RET VAL: \(String(ret2.rawValue,radix: 16))")
-            printDebugMessage("DATA: \(data)")
-            printDebugMessage("--------------------------------")
+//            let TLVstring = "DFEE12"
+//            let TLV = IDTUtility.hex(toData: TLVstring)
+//
+//
+//            var data: NSDictionary?
+//            let ret2 = IDT_VP3300
+//                .sharedController()
+//                .emv_retrieveTransactionResult(TLV, retrievedTags: &data)
+//
+//
+//            printDebugMessage("--------------------------------")
+//            printDebugMessage("RET VAL: \(String(ret2.rawValue,radix: 16))")
+//            printDebugMessage("DATA: \(data)")
+//            printDebugMessage("--------------------------------")
         }
     }
     
@@ -225,9 +230,10 @@ extension BLEListViewController: IDT_VP3300_Delegate {
     func deviceConnected() {
         printDebugMessage("DEVICE CONNECTED")
         
-        IDT_VP3300
-            .sharedController()
-            .device_disableBLEDeviceSearch()
+        
+//        IDT_VP3300
+//            .sharedController()
+//            .device_disableBLEDeviceSearch()
         
         //        let TLVstring = "5F360102DFEF4B017f"
         //        //        "5F360102"

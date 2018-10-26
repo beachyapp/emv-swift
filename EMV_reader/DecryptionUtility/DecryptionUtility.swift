@@ -48,21 +48,6 @@ class DecryptionUtility {
         return bdk
     }
     
-//    //DEPRECATED
-//    static func hexToBinaryData(hex: String) -> String {
-//        return hex.pairs.filter({$0 != ""})
-//            .map({ String(UnicodeScalar(UInt8($0, radix: 16)!)) })
-//            .reduce("", { return $0 + $1 })
-//    }
-//
-//    //DEPRECATED
-//    static func hexToAscii(hex: String) -> String {
-//        let chars = hex.pairs.filter({$0 != ""})
-//            .map({ Character(UnicodeScalar(UInt8($0, radix: 16)!)) })
-//        return String(chars)
-//    }
-    
-    
     static func binaryXOR(_ firstHex: String, _ secondHex: String) -> [UInt8] {
         var data1 = [UInt8](hexString: firstHex)
         var data2 = [UInt8](hexString: secondHex)
