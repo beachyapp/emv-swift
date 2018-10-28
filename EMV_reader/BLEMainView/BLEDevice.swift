@@ -27,7 +27,7 @@ class BLEDevice {
     }
     
     func getName() -> String {
-        return name;
+        return name
     }
 }
 

@@ -10,8 +10,10 @@ import UIKit
 
 class BLEListViewController: UIViewController {
     var devices: Set<BLEDevice> = []
-    var centralManager: CBCentralManager!
+//    var centralManager: CBCentralManager!
     var selectedDevice: BLEDevice? = nil
+    
+    var ble: BLE!
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var selectedDeviceLabel: UILabel!
@@ -53,21 +55,13 @@ class BLEListViewController: UIViewController {
         } else {
             printDebugMessage("Not even connected?")
         }
-        
-//            .emv_startTransaction(1.00, amtOther: 0, type: 0, timeout: 60, tags: nil, forceOnline: false, fallback: true)
-//            .device_startTransaction(1.00,
-//                                     amtOther: 0,
-//                                     type: 0,
-//                                     timeout: 60,
-//                                     tags: nil,
-//                                     forceOnline: false,
-//                                     fallback: true)
-        
-       
     }
     
     @IBAction func connect(_ sender: UIButton) {
         if (selectedDevice != nil) {
+            IDT_VP3300
+                .sharedController()
+                .device_disableBLEDeviceSearch()
             
             let rt = IDT_VP3300
                 .sharedController()
@@ -86,8 +80,21 @@ class BLEListViewController: UIViewController {
         
         IDT_VP3300.sharedController().delegate = self
         
-        centralManager = CBCentralManager(delegate: self,
-                                          queue: DispatchQueue.main)
+        ble = BLE()
+        ble.onBLEStateUpdate = { [weak self] (status: String) in self?.statusUpdate(status: status) }
+        ble.onBLEAvailableDevicesListUpdate = { [weak self] (list: Set<BLEDevice>) in self?.listUpdate(list: list) }
+        
+//        centralManager = CBCentralManager(delegate: self,
+//                                          queue: DispatchQueue.main)
+    }
+    
+    func statusUpdate(status: String) {
+        print("STATUS: \(status)")
+    }
+    
+    func listUpdate(list: Set<BLEDevice>) {
+        self.devices = list;
+        self.tableView.reloadData()
     }
     
     func printDebugMessage(_ message: String) {
@@ -150,34 +157,34 @@ extension BLEListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
-
-extension BLEListViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .poweredOn:
-            self.centralManager?.scanForPeripherals(
-                withServices: nil,
-                options: nil)
-        case .poweredOff:
-            self.centralManager?.stopScan();
-        default:
-            printDebugMessage("unknown state")
-        }
-    }
-    
-    func centralManager(_ central: CBCentralManager,
-                        didDiscover peripheral: CBPeripheral,
-                        advertisementData: [String : Any],
-                        rssi RSSI: NSNumber) {
-        let prevCount = self.devices.count;
-        
-        self.devices.insert(BLEDevice(
-            name: peripheral.name ?? "unknown",
-            identifier: peripheral.identifier))
-        
-        if (self.devices.count != prevCount) {
-            self.tableView.reloadData()
-        }
-    }
-}
+//
+//extension BLEListViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
+//    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+//        switch central.state {
+//        case .poweredOn:
+//            self.centralManager?.scanForPeripherals(
+//                withServices: nil,
+//                options: nil)
+//        case .poweredOff:
+//            self.centralManager?.stopScan();
+//        default:
+//            printDebugMessage("unknown state")
+//        }
+//    }
+//
+//    func centralManager(_ central: CBCentralManager,
+//                        didDiscover peripheral: CBPeripheral,
+//                        advertisementData: [String : Any],
+//                        rssi RSSI: NSNumber) {
+//        let prevCount = self.devices.count;
+//
+//        self.devices.insert(BLEDevice(
+//            name: peripheral.name ?? "unknown",
+//            identifier: peripheral.identifier))
+//
+//        if (self.devices.count != prevCount) {
+//            self.tableView.reloadData()
+//        }
+//    }
+//}
 
