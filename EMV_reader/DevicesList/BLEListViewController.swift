@@ -10,10 +10,10 @@ import UIKit
 
 class BLEListViewController: UIViewController {
     var devices: Set<BLEDevice> = []
-//    var centralManager: CBCentralManager!
     var selectedDevice: BLEDevice? = nil
     
     var ble: BLE!
+    var emv: EmvDevice!
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var selectedDeviceLabel: UILabel!
@@ -23,52 +23,38 @@ class BLEListViewController: UIViewController {
     @IBOutlet weak var consoleTextVIew: UITextView!
     
     @IBAction func startListeningLoop(_ sender: UIButton) {
-        /**
-         * 0xDFEE1A [N*SIZE OF TAG][TAG1][TAG2]...[TAGN]
-         *
-         */
-//        let TLVstring = "DFEE1A03DFEE12"
-//        let TLV = IDTUtility.hex(toData: TLVstring)
-        IDT_VP3300
-            .sharedController()
-            .ctls_startTransaction()
-        
-        if (IDT_VP3300
-            .sharedController()
-            .device_isConnected(IDT_DEVICE_VP3300_IOS)) {
-            
-            
-            IDT_VP3300.sharedController().msr_cancelMSRSwipe();
-            IDT_VP3300.sharedController().device_cancelTransaction();
-        
-            let rt = IDT_VP3300
-                .sharedController()
-                .device_startTransaction(0, amtOther: 0, type: 0, timeout: 60, tags: nil, forceOnline: false, fallback: true)
-            
-            if RETURN_CODE_DO_SUCCESS == rt {
-                printDebugMessage("Start transaction command accepted")
-                printDebugMessage(String(rt.rawValue, radix: 16))
-            } else {
-                printDebugMessage("Start EMV transaction error")
-                printDebugMessage(String(rt.rawValue, radix: 16))
+        do {
+            let res = try emv.readCC(0)
+            if res {
+                statusUpdate(status: "Waiting for swipe/connection")
             }
-        } else {
-            printDebugMessage("Not even connected?")
+        } catch EmvError.cannotParseCardData(
+            let message) {
+            statusUpdate(status: message)
+        } catch EmvError.cannotStartTransaction(
+            let message) {
+            statusUpdate(status: message)
+        } catch EmvError.deviceIsNotConnected {
+            statusUpdate(status: "Device not connected")
+        } catch {
+            statusUpdate(status: error.localizedDescription)
         }
     }
     
     @IBAction func connect(_ sender: UIButton) {
         if (selectedDevice != nil) {
-            IDT_VP3300
-                .sharedController()
-                .device_disableBLEDeviceSearch()
+            let isConnecting = emv.connect(uuid: selectedDevice!.getIdentifier())
+            // emv.connect(friendlyName: selectedDevice!.getName()())
             
-            let rt = IDT_VP3300
-                .sharedController()
-                .device_enableBLEDeviceSearch(
-                    selectedDevice!.getIdentifier())
-            
-            printDebugMessage("Connecting to \(String(describing: selectedDevice?.identifier)) | ret: \(rt)")
+            if (isConnecting) {
+                statusUpdate(status: "Connecting ...")
+                connectButton.isEnabled = false
+                
+            } else {
+                statusUpdate(status: "Unable to connect")
+                connectButton.isEnabled = true
+            }
+
         }
     }
     
@@ -78,18 +64,50 @@ class BLEListViewController: UIViewController {
         connectButton.isEnabled = false
         listeningButton.isEnabled = false
         
-        IDT_VP3300.sharedController().delegate = self
+        emv = EmvDevice()
+        emv.onEmvConnected = { [weak self] () in self?.statusUpdate(status: "EMV Reader connected")
+            
+            self?.connectButton.isEnabled = false
+            self?.listeningButton.isEnabled = true
+        }
+        emv.onEmvDisconnected = { [weak self] () in self?.statusUpdate(status: "EMV Reader disconnected")
+            
+            self?.connectButton.isEnabled = true
+            self?.listeningButton.isEnabled = false
+        }
+        emv.onEmvSendMessage =  { [weak self] (message: String) in self?.statusUpdate(status: message) }
+        
+        emv.onEmvDataParseError = { [weak self] (errorMessage: String) in self?.statusUpdate(status: errorMessage) }
+        emv.onEmvDataReceived = {
+            [weak self] (data: String) in self?.receivedCCData(data)
+        }
         
         ble = BLE()
-        ble.onBLEStateUpdate = { [weak self] (status: String) in self?.statusUpdate(status: status) }
-        ble.onBLEAvailableDevicesListUpdate = { [weak self] (list: Set<BLEDevice>) in self?.listUpdate(list: list) }
-        
-//        centralManager = CBCentralManager(delegate: self,
-//                                          queue: DispatchQueue.main)
+        ble.onBLEStateUpdate = { [weak self] (status: String) in
+            self?.statusUpdate(status: status)
+        }
+        ble.onBLEAvailableDevicesListUpdate = { [weak self] (list: Set<BLEDevice>) in
+            self?.listUpdate(list: list)
+        }
+    }
+    
+    func receivedCCData(_ message: String) {
+        let alert = UIAlertController(
+            title: "Got it!",
+            message: message,
+            preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(
+            title: "Ok",
+            style: .default,
+            handler: nil))
+
+        self.present(alert, animated: true)
     }
     
     func statusUpdate(status: String) {
         print("STATUS: \(status)")
+        printDebugMessage(status)
     }
     
     func listUpdate(list: Set<BLEDevice>) {
@@ -155,36 +173,4 @@ extension BLEListViewController: UITableViewDelegate, UITableViewDataSource {
         
         return cell
     }
-    
 }
-//
-//extension BLEListViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
-//    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-//        switch central.state {
-//        case .poweredOn:
-//            self.centralManager?.scanForPeripherals(
-//                withServices: nil,
-//                options: nil)
-//        case .poweredOff:
-//            self.centralManager?.stopScan();
-//        default:
-//            printDebugMessage("unknown state")
-//        }
-//    }
-//
-//    func centralManager(_ central: CBCentralManager,
-//                        didDiscover peripheral: CBPeripheral,
-//                        advertisementData: [String : Any],
-//                        rssi RSSI: NSNumber) {
-//        let prevCount = self.devices.count;
-//
-//        self.devices.insert(BLEDevice(
-//            name: peripheral.name ?? "unknown",
-//            identifier: peripheral.identifier))
-//
-//        if (self.devices.count != prevCount) {
-//            self.tableView.reloadData()
-//        }
-//    }
-//}
-
