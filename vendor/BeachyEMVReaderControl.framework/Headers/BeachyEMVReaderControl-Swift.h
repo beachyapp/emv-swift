@@ -189,6 +189,7 @@ SWIFT_CLASS("_TtC22BeachyEMVReaderControl9BLEDevice")
 - (NSUUID * _Nonnull)getIdentifier SWIFT_WARN_UNUSED_RESULT;
 - (NSString * _Nonnull)getName SWIFT_WARN_UNUSED_RESULT;
 @property (nonatomic, readonly) NSUInteger hash;
+- (BOOL)isEqual:(id _Nullable)object SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_DEPRECATED_MSG("-init is unavailable");
 @end
@@ -237,7 +238,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) BeachyEMVReaderControl
 SWIFT_PROTOCOL("_TtP22BeachyEMVReaderControl30BeachyEMVReaderControlProtocol_")
 @protocol BeachyEMVReaderControlProtocol
 - (void)bluetoothStatusUpdateWithStatus:(NSString * _Nonnull)status;
-- (void)bluetoothAvailableDevicesListUpdateWithDevices:(NSArray<BLEDevice *> * _Nonnull)devices;
+- (void)bluetoothAvailableDevicesListUpdateWithDevices:(NSSet<BLEDevice *> * _Nonnull)devices;
 - (void)readerConnected;
 - (void)readerDisconnected;
 - (void)readerDataParseErrorWithErrorMessage:(NSString * _Nonnull)errorMessage;
