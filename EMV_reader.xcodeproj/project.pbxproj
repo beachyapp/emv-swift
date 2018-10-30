@@ -7,48 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F795A6390B13C7FEC80E512 /* Pods_EMV_reader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */; };
-		E7281CAB2178DC1A0069B633 /* DecryptionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */; };
 		E7281CAE2178DDA90069B633 /* Collection+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CAD2178DDA90069B633 /* Collection+Hex.swift */; };
 		E7281CB02178DDE50069B633 /* Data+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CAF2178DDE50069B633 /* Data+Hex.swift */; };
 		E7281CB22179A4B90069B633 /* UInt8Array+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7281CB12179A4B90069B633 /* UInt8Array+Hex.swift */; };
-		E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7322D99216E639B003773AC /* IDTech.framework */; };
 		E739AB66217C96D300CB04C0 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E739AB65217C96D300CB04C0 /* String+Hex.swift */; };
-		E74163442183408200E95009 /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74163432183408200E95009 /* BLE.swift */; };
-		E741634821858A7900E95009 /* EMVDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E741634721858A7900E95009 /* EMVDevice.swift */; };
 		E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */; };
-		E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */; };
 		E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D3B216E062600D35E93 /* BLEListViewController.swift */; };
+		E7B9FCEA218877F1002CB340 /* BeachyEMVReaderControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B9FCE9218877F1002CB340 /* BeachyEMVReaderControl.framework */; };
+		E7B9FCEC21887C0D002CB340 /* BeachyEMVReaderControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7B9FCE9218877F1002CB340 /* BeachyEMVReaderControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92EBD216D0B2800B444BA /* AppDelegate.swift */; };
 		E7C92EC3216D0B2800B444BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC1216D0B2800B444BA /* Main.storyboard */; };
 		E7C92EC5216D0B2900B444BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC4216D0B2900B444BA /* Assets.xcassets */; };
 		E7C92EC8216D0B2900B444BA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */; };
-		E7C92ED1216D0B9D00B444BA /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E7B9FCED21887C0E002CB340 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E7B9FCEC21887C0D002CB340 /* BeachyEMVReaderControl.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMV_reader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader.debug.xcconfig"; sourceTree = "<group>"; };
-		37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EMV_reader.release.xcconfig"; path = "Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader.release.xcconfig"; sourceTree = "<group>"; };
-		DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EMV_reader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptionUtility.swift; sourceTree = "<group>"; };
 		E7281CAD2178DDA90069B633 /* Collection+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Hex.swift"; sourceTree = "<group>"; };
 		E7281CAF2178DDE50069B633 /* Data+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Hex.swift"; sourceTree = "<group>"; };
 		E7281CB12179A4B90069B633 /* UInt8Array+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt8Array+Hex.swift"; sourceTree = "<group>"; };
-		E7322D99216E639B003773AC /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "../../Downloads/80149808-001-B/Source/Swift/VP3300_Test_App/IDTech.framework"; sourceTree = "<group>"; };
 		E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IDTech-Bridging-Header.h"; sourceTree = "<group>"; };
 		E739AB65217C96D300CB04C0 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
-		E74163432183408200E95009 /* BLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
-		E741634721858A7900E95009 /* EMVDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EMVDevice.swift; sourceTree = "<group>"; };
 		E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceTableViewCell.swift; sourceTree = "<group>"; };
-		E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevice.swift; sourceTree = "<group>"; };
 		E79B8D3B216E062600D35E93 /* BLEListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		E7B9FCE9218877F1002CB340 /* BeachyEMVReaderControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BeachyEMVReaderControl.framework; sourceTree = "<group>"; };
 		E7C92EBA216D0B2800B444BA /* EMV_reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMV_reader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7C92EBD216D0B2800B444BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E7C92EC2216D0B2800B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E7C92EC4216D0B2900B444BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7C92EC7216D0B2900B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E7C92EC9216D0B2900B444BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,24 +57,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7C92ED1216D0B9D00B444BA /* CoreBluetooth.framework in Frameworks */,
-				E7322D9A216E639B003773AC /* IDTech.framework in Frameworks */,
-				5F795A6390B13C7FEC80E512 /* Pods_EMV_reader.framework in Frameworks */,
+				E7B9FCEA218877F1002CB340 /* BeachyEMVReaderControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7D0C43BCEC16BCC773AE2D47 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */,
-				37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		E7281CAC2178DD760069B633 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,23 +75,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		E739AB68217C98F600CB04C0 /* BLE */ = {
-			isa = PBXGroup;
-			children = (
-				E74163432183408200E95009 /* BLE.swift */,
-				E79B8D2D216DCBCD00D35E93 /* BLEDevice.swift */,
-			);
-			path = BLE;
-			sourceTree = "<group>";
-		};
-		E739AB69217C991000CB04C0 /* DecryptionUtility */ = {
-			isa = PBXGroup;
-			children = (
-				E7281CAA2178DC1A0069B633 /* DecryptionUtility.swift */,
-			);
-			path = DecryptionUtility;
-			sourceTree = "<group>";
-		};
 		E74163452185867100E95009 /* DevicesList */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,21 +84,12 @@
 			path = DevicesList;
 			sourceTree = "<group>";
 		};
-		E74163462185888700E95009 /* EMVReader */ = {
-			isa = PBXGroup;
-			children = (
-				E741634721858A7900E95009 /* EMVDevice.swift */,
-			);
-			path = EMVReader;
-			sourceTree = "<group>";
-		};
 		E7C92EB1216D0B2700B444BA = {
 			isa = PBXGroup;
 			children = (
 				E7C92EBC216D0B2800B444BA /* EMV_reader */,
 				E7C92EBB216D0B2800B444BA /* Products */,
 				E7C92ECF216D0B9D00B444BA /* Frameworks */,
-				7D0C43BCEC16BCC773AE2D47 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -140,14 +104,11 @@
 		E7C92EBC216D0B2800B444BA /* EMV_reader */ = {
 			isa = PBXGroup;
 			children = (
-				E74163462185888700E95009 /* EMVReader */,
 				E74163452185867100E95009 /* DevicesList */,
-				E739AB68217C98F600CB04C0 /* BLE */,
 				E7281CAC2178DD760069B633 /* Extensions */,
 				E7322D9C216E653B003773AC /* IDTech-Bridging-Header.h */,
 				E7C92EBD216D0B2800B444BA /* AppDelegate.swift */,
 				E7C92EC1216D0B2800B444BA /* Main.storyboard */,
-				E739AB69217C991000CB04C0 /* DecryptionUtility */,
 				E7C92EC4216D0B2900B444BA /* Assets.xcassets */,
 				E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */,
 				E7C92EC9216D0B2900B444BA /* Info.plist */,
@@ -158,9 +119,7 @@
 		E7C92ECF216D0B9D00B444BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E7322D99216E639B003773AC /* IDTech.framework */,
-				E7C92ED0216D0B9D00B444BA /* CoreBluetooth.framework */,
-				DC66DBC61740C36BF6EFDAEB /* Pods_EMV_reader.framework */,
+				E7B9FCE9218877F1002CB340 /* BeachyEMVReaderControl.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -172,11 +131,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7C92ECC216D0B2900B444BA /* Build configuration list for PBXNativeTarget "EMV_reader" */;
 			buildPhases = (
-				4294A452BD91EA80CBE8BE5B /* [CP] Check Pods Manifest.lock */,
 				E7C92EB6216D0B2800B444BA /* Sources */,
 				E7C92EB7216D0B2800B444BA /* Frameworks */,
 				E7C92EB8216D0B2800B444BA /* Resources */,
-				9359B0F88849C759586C75E1 /* [CP] Embed Pods Frameworks */,
+				E7B9FCED21887C0E002CB340 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -233,59 +191,16 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		4294A452BD91EA80CBE8BE5B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-EMV_reader-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		9359B0F88849C759586C75E1 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CryptoSwift.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EMV_reader/Pods-EMV_reader-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		E7C92EB6216D0B2800B444BA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */,
-				E7281CAB2178DC1A0069B633 /* DecryptionUtility.swift in Sources */,
 				E739AB66217C96D300CB04C0 /* String+Hex.swift in Sources */,
-				E741634821858A7900E95009 /* EMVDevice.swift in Sources */,
-				E79B8D2E216DCBCD00D35E93 /* BLEDevice.swift in Sources */,
 				E7281CAE2178DDA90069B633 /* Collection+Hex.swift in Sources */,
 				E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */,
 				E7281CB02178DDE50069B633 /* Data+Hex.swift in Sources */,
-				E74163442183408200E95009 /* BLE.swift in Sources */,
 				E7281CB22179A4B90069B633 /* UInt8Array+Hex.swift in Sources */,
 				E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */,
 			);
@@ -431,7 +346,6 @@
 		};
 		E7C92ECD216D0B2900B444BA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1FF1FCFCC3FF91797B365742 /* Pods-EMV_reader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -440,6 +354,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = EMV_reader/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
@@ -458,7 +373,6 @@
 		};
 		E7C92ECE216D0B2900B444BA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 37919EF7386860F97F27F586 /* Pods-EMV_reader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -467,6 +381,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = EMV_reader/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;

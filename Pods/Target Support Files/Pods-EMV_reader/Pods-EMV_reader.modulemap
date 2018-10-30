@@ -1,6 +1,0 @@
-framework module Pods_EMV_reader {
-  umbrella header "Pods-EMV_reader-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -5,15 +5,30 @@
 //  Created by Piotr Ilski on 10.10.2018.
 //  Copyright © 2018 Beachy. All rights reserved.
 //
-import CoreBluetooth
 import UIKit
+//import BeachyEMVReaderControl
+import BeachyEMVReaderControl
+//
+//class BLEDevice: NSObject {
+//    var name: String = ""
+//    var isSupportedEmv: Bool = false
+//
+//    func getName() -> String {
+//        return ""
+//    }
+//
+//    func getIdentifier() -> UUID {
+//        return UUID.init(uuidString: "ABC")!
+//    }
+//}
 
 class BLEListViewController: UIViewController {
     var devices: Set<BLEDevice> = []
     var selectedDevice: BLEDevice? = nil
     
-    var ble: BLE!
-    var emv: EmvDevice!
+//    var ble: BLE!
+//    var emv: EmvDevice!
+    var b: BeachyEMVReaderControl = BeachyEMVReaderControl.shared
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var selectedDeviceLabel: UILabel!
@@ -23,72 +38,35 @@ class BLEListViewController: UIViewController {
     @IBOutlet weak var consoleTextVIew: UITextView!
     
     @IBAction func startListeningLoop(_ sender: UIButton) {
-        do {
-            let res = try emv.readCC(0)
-            if res {
-                statusUpdate(status: "Waiting for swipe/connection")
-            }
-        } catch EmvError.cannotParseCardData(
-            let message) {
-            statusUpdate(status: message)
-        } catch EmvError.cannotStartTransaction(
-            let message) {
-            statusUpdate(status: message)
-        } catch EmvError.deviceIsNotConnected {
-            statusUpdate(status: "Device not connected")
-        } catch {
-            statusUpdate(status: error.localizedDescription)
-        }
+        let res = b.readCardData(0)
+            
+        statusUpdate(status: "Waiting for swipe/connection: \(res)")
     }
     
     @IBAction func connect(_ sender: UIButton) {
         if (selectedDevice != nil) {
-            let isConnecting = emv.connect(uuid: selectedDevice!.getIdentifier())
-            // emv.connect(friendlyName: selectedDevice!.getName()())
-            
+            let isConnecting = b.connect(uuid: selectedDevice!.getIdentifier())
+
             if (isConnecting) {
                 statusUpdate(status: "Connecting ...")
                 connectButton.isEnabled = false
-                
+
             } else {
                 statusUpdate(status: "Unable to connect")
                 connectButton.isEnabled = true
             }
-
         }
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    
         
         connectButton.isEnabled = false
         listeningButton.isEnabled = false
         
-        emv = EmvDevice()
-        emv.onEmvConnected = { [weak self] () in self?.statusUpdate(status: "EMV Reader connected")
-            
-            self?.connectButton.isEnabled = false
-            self?.listeningButton.isEnabled = true
-        }
-        emv.onEmvDisconnected = { [weak self] () in self?.statusUpdate(status: "EMV Reader disconnected")
-            
-            self?.connectButton.isEnabled = true
-            self?.listeningButton.isEnabled = false
-        }
-        emv.onEmvSendMessage =  { [weak self] (message: String) in self?.statusUpdate(status: message) }
-        
-        emv.onEmvDataParseError = { [weak self] (errorMessage: String) in self?.statusUpdate(status: errorMessage) }
-        emv.onEmvDataReceived = {
-            [weak self] (data: String) in self?.receivedCCData(data)
-        }
-        
-        ble = BLE()
-        ble.onBLEStateUpdate = { [weak self] (status: String) in
-            self?.statusUpdate(status: status)
-        }
-        ble.onBLEAvailableDevicesListUpdate = { [weak self] (list: Set<BLEDevice>) in
-            self?.listUpdate(list: list)
-        }
+        b.delegate = self
     }
     
     func receivedCCData(_ message: String) {
@@ -120,13 +98,47 @@ class BLEListViewController: UIViewController {
     }
 }
 
+extension BLEListViewController: BeachyEMVReaderControlProtocol {
+    func bluetoothAvailableDevicesListUpdate(devices: [BLEDevice]) {
+        listUpdate(list: Set(devices))
+    }
+
+    func bluetoothStatusUpdate(status: String) {
+        statusUpdate(status: status)
+    }
+
+
+    func readerConnected() {
+        connectButton.isEnabled = false
+        listeningButton.isEnabled = true
+    }
+
+    func readerDisconnected() {
+        connectButton.isEnabled = true
+        listeningButton.isEnabled = false
+    }
+
+    func readerDataParseError(errorMessage: String) {
+        statusUpdate(status: errorMessage)
+    }
+
+    func readerData(data: String) {
+        receivedCCData(data)
+    }
+
+    func readerSendsMessage(message: String) {
+        statusUpdate(status: message)
+    }
+
+}
+
 extension BLEListViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sortedDevices = self.devices.sorted(by: { $0.name < $1.name })
+        let sortedDevices = self.devices.sorted(by: { $0.getName() < $1.getName() })
         let device = sortedDevices[indexPath.row]
         
         if (device.isSupportedEmv) {
@@ -157,7 +169,7 @@ extension BLEListViewController: UITableViewDelegate, UITableViewDataSource {
             fatalError("The dequeued cell is not an instance of BLEDeviceTableViewCell.")
         }
         
-        let sortedDevices = self.devices.sorted(by: { $0.name < $1.name })
+        let sortedDevices = self.devices.sorted(by: { $0.getName() < $1.getName() })
         let device = sortedDevices[indexPath.row]
         
         cell.nameLabel.text = device.getName()

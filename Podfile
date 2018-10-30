@@ -6,5 +6,4 @@ target 'EMV_reader' do
   use_frameworks!
 
   # Pods for EMV_reader
-  pod 'CryptoSwift'
 end
