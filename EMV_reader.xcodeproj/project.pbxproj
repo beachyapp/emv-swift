@@ -13,22 +13,22 @@
 		E739AB66217C96D300CB04C0 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E739AB65217C96D300CB04C0 /* String+Hex.swift */; };
 		E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */; };
 		E79B8D3C216E062600D35E93 /* BLEListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79B8D3B216E062600D35E93 /* BLEListViewController.swift */; };
+		E79FAA78219307D400BAF70D /* BeachyEMVReaderControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E79FAA77219307D400BAF70D /* BeachyEMVReaderControl.framework */; };
+		E79FAA79219307D400BAF70D /* BeachyEMVReaderControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E79FAA77219307D400BAF70D /* BeachyEMVReaderControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C92EBD216D0B2800B444BA /* AppDelegate.swift */; };
 		E7C92EC3216D0B2800B444BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC1216D0B2800B444BA /* Main.storyboard */; };
 		E7C92EC5216D0B2900B444BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC4216D0B2900B444BA /* Assets.xcassets */; };
 		E7C92EC8216D0B2900B444BA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7C92EC6216D0B2900B444BA /* LaunchScreen.storyboard */; };
-		E7D911292188A01C000433DF /* BeachyEMVReaderControl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D911282188A01C000433DF /* BeachyEMVReaderControl.framework */; };
-		E7D9112A2188A01C000433DF /* BeachyEMVReaderControl.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7D911282188A01C000433DF /* BeachyEMVReaderControl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		E7D9112B2188A01C000433DF /* Embed Frameworks */ = {
+		E79FAA76219307BA00BAF70D /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E7D9112A2188A01C000433DF /* BeachyEMVReaderControl.framework in Embed Frameworks */,
+				E79FAA79219307D400BAF70D /* BeachyEMVReaderControl.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -43,13 +43,14 @@
 		E739AB65217C96D300CB04C0 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
 		E79B8D29216DC80600D35E93 /* BLEDeviceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDeviceTableViewCell.swift; sourceTree = "<group>"; };
 		E79B8D3B216E062600D35E93 /* BLEListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEListViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		E79FAA71219307B000BAF70D /* BeachyEMVReaderControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BeachyEMVReaderControl.framework; path = ../BeachyEMVReaderControl/BeachyEMVReaderControl/BeachyEMVReaderControl.framework; sourceTree = "<group>"; };
+		E79FAA77219307D400BAF70D /* BeachyEMVReaderControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BeachyEMVReaderControl.framework; sourceTree = "<group>"; };
 		E7C92EBA216D0B2800B444BA /* EMV_reader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMV_reader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7C92EBD216D0B2800B444BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E7C92EC2216D0B2800B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E7C92EC4216D0B2900B444BA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7C92EC7216D0B2900B444BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E7C92EC9216D0B2900B444BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E7D911282188A01C000433DF /* BeachyEMVReaderControl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BeachyEMVReaderControl.framework; path = vendor/BeachyEMVReaderControl.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7D911292188A01C000433DF /* BeachyEMVReaderControl.framework in Frameworks */,
+				E79FAA78219307D400BAF70D /* BeachyEMVReaderControl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,7 +88,7 @@
 		E7C92EB1216D0B2700B444BA = {
 			isa = PBXGroup;
 			children = (
-				E7D911282188A01C000433DF /* BeachyEMVReaderControl.framework */,
+				E79FAA77219307D400BAF70D /* BeachyEMVReaderControl.framework */,
 				E7C92EBC216D0B2800B444BA /* EMV_reader */,
 				E7C92EBB216D0B2800B444BA /* Products */,
 				E7C92ECF216D0B9D00B444BA /* Frameworks */,
@@ -120,6 +121,7 @@
 		E7C92ECF216D0B9D00B444BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E79FAA71219307B000BAF70D /* BeachyEMVReaderControl.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -134,7 +136,7 @@
 				E7C92EB6216D0B2800B444BA /* Sources */,
 				E7C92EB7216D0B2800B444BA /* Frameworks */,
 				E7C92EB8216D0B2800B444BA /* Resources */,
-				E7D9112B2188A01C000433DF /* Embed Frameworks */,
+				E79FAA76219307BA00BAF70D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

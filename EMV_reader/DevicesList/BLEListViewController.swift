@@ -6,28 +6,12 @@
 //  Copyright © 2018 Beachy. All rights reserved.
 //
 import UIKit
-//import BeachyEMVReaderControl
 import BeachyEMVReaderControl
-//
-//class BLEDevice: NSObject {
-//    var name: String = ""
-//    var isSupportedEmv: Bool = false
-//
-//    func getName() -> String {
-//        return ""
-//    }
-//
-//    func getIdentifier() -> UUID {
-//        return UUID.init(uuidString: "ABC")!
-//    }
-//}
 
 class BLEListViewController: UIViewController {
     var devices: Set<BLEDevice> = []
     var selectedDevice: BLEDevice? = nil
     
-//    var ble: BLE!
-//    var emv: EmvDevice!
     var b: BeachyEMVReaderControl = BeachyEMVReaderControl.shared
     
     @IBOutlet weak var tableView: UITableView!
@@ -58,11 +42,9 @@ class BLEListViewController: UIViewController {
         }
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        
         connectButton.isEnabled = false
         listeningButton.isEnabled = false
         
@@ -84,7 +66,6 @@ class BLEListViewController: UIViewController {
     }
     
     func statusUpdate(status: String) {
-        print("STATUS: \(status)")
         printDebugMessage(status)
     }
     
@@ -99,6 +80,7 @@ class BLEListViewController: UIViewController {
 }
 
 extension BLEListViewController: BeachyEMVReaderControlProtocol {
+    
     func bluetoothAvailableDevicesListUpdate(devices: Set<BLEDevice>) {
         listUpdate(list: devices)
     }
@@ -107,8 +89,7 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
         statusUpdate(status: status)
     }
 
-
-    func readerConnected() {
+    func readerConnected(uuid: String) {
         connectButton.isEnabled = false
         listeningButton.isEnabled = true
     }
@@ -129,7 +110,6 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
     func readerSendsMessage(message: String) {
         statusUpdate(status: message)
     }
-
 }
 
 extension BLEListViewController: UITableViewDelegate, UITableViewDataSource {
