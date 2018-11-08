@@ -101,7 +101,7 @@ class BLEListViewController: UIViewController {
 }
 
 extension BLEListViewController: BeachyEMVReaderControlProtocol {
-    
+  
     func bluetoothAvailableDevicesListUpdate(devices: Set<BLEDevice>) {
         listUpdate(list: devices)
         autoConnect(list: devices)
