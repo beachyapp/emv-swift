@@ -9,11 +9,14 @@ import UIKit
 import BeachyEMVReaderControl
 
 class BLEListViewController: UIViewController {
+    private var isConnecting: Bool = false;
+    
     var devices: Set<BLEDevice> = []
     var selectedDevice: BLEDevice? = nil
     
     var b: BeachyEMVReaderControl = BeachyEMVReaderControl.shared
     
+    @IBOutlet weak var connectionStatus: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var selectedDeviceLabel: UILabel!
     @IBOutlet weak var connectButton: UIButton!
@@ -28,18 +31,9 @@ class BLEListViewController: UIViewController {
     }
     
     @IBAction func connect(_ sender: UIButton) {
-        if (selectedDevice != nil) {
-            let isConnecting = b.connect(uuid: selectedDevice!.getIdentifier())
-
-            if (isConnecting) {
-                statusUpdate(status: "Connecting ...")
-                connectButton.isEnabled = false
-
-            } else {
-                statusUpdate(status: "Unable to connect")
-                connectButton.isEnabled = true
-            }
-        }
+        guard let uuid = selectedDevice?.getIdentifier() else { return; }
+        
+        connect(uuid: uuid)
     }
     
     override func viewDidLoad() {
@@ -77,12 +71,40 @@ class BLEListViewController: UIViewController {
     func printDebugMessage(_ message: String) {
         consoleTextVIew.text = consoleTextVIew.text + "\n" + message
     }
+    
+    func autoConnect(list: Set<BLEDevice>) {
+        let filtered = list.filter { $0.isSupportedEmv }
+        
+        if filtered.count > 0 {
+            guard let uuid = filtered.first?.getIdentifier() else { return; }
+            
+            connect(uuid: uuid)
+        }
+    }
+    
+    private func connect(uuid: UUID) {
+        isConnecting = b.connect(uuid: uuid)
+        
+        if (isConnecting) {
+            updateConnectionStatus("connecting")
+            statusUpdate(status: "Connecting ...")
+            connectButton.isEnabled = false
+        } else {
+            statusUpdate(status: "Unable to connect")
+            connectButton.isEnabled = true
+        }
+    }
+    
+    private func updateConnectionStatus(_ status: String) {
+        self.connectionStatus.text = status;
+    }
 }
 
 extension BLEListViewController: BeachyEMVReaderControlProtocol {
     
     func bluetoothAvailableDevicesListUpdate(devices: Set<BLEDevice>) {
         listUpdate(list: devices)
+        autoConnect(list: devices)
     }
 
     func bluetoothStatusUpdate(status: String) {
@@ -90,12 +112,16 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
     }
 
     func readerConnected(uuid: String) {
+        updateConnectionStatus("connected")
+        isConnecting = false;
         connectButton.isEnabled = false
         listeningButton.isEnabled = true
     }
 
     func readerDisconnected() {
-        connectButton.isEnabled = true
+        updateConnectionStatus("disconnected")
+        isConnecting = false;
+        connectButton.isEnabled = selectedDevice != nil
         listeningButton.isEnabled = false
     }
 
