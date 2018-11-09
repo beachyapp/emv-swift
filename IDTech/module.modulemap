@@ -1,0 +1,4 @@
+module IDTech {
+    header "../IDTech/IDTech.framework/Headers/IDTech.h"
+    export *
+}

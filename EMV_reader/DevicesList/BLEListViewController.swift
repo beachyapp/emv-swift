@@ -6,7 +6,7 @@
 //  Copyright © 2018 Beachy. All rights reserved.
 //
 import UIKit
-import BeachyEMVReaderControl
+
 
 class BLEListViewController: UIViewController {
     private var isConnecting: Bool = false;
@@ -101,6 +101,13 @@ class BLEListViewController: UIViewController {
 }
 
 extension BLEListViewController: BeachyEMVReaderControlProtocol {
+    func readerConnected() {
+        updateConnectionStatus("connected")
+        isConnecting = false;
+        connectButton.isEnabled = false
+        listeningButton.isEnabled = true
+    }
+    
   
     func bluetoothAvailableDevicesListUpdate(devices: Set<BLEDevice>) {
         listUpdate(list: devices)
@@ -109,13 +116,6 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
 
     func bluetoothStatusUpdate(status: String) {
         statusUpdate(status: status)
-    }
-
-    func readerConnected(uuid: String) {
-        updateConnectionStatus("connected")
-        isConnecting = false;
-        connectButton.isEnabled = false
-        listeningButton.isEnabled = true
     }
 
     func readerDisconnected() {
