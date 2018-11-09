@@ -21,8 +21,8 @@
 		E7D4FDAE21958A9100BAA060 /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D4FDAD21958A9100BAA060 /* BLE.swift */; };
 		E7D4FDB021958AB600BAA060 /* BLEDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D4FDAF21958AB600BAA060 /* BLEDevice.swift */; };
 		E7D4FDB321958AE400BAA060 /* EMVDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D4FDB221958AE400BAA060 /* EMVDevice.swift */; };
-		E7D4FDB621958B3B00BAA060 /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D4FDB521958B3B00BAA060 /* DecryptUtils.swift */; };
 		E7D4FDBA21958BB600BAA060 /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D4FDB821958BB600BAA060 /* IDTech.framework */; };
+		E7D4FDBE2195A3F900BAA060 /* DecryptUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D4FDBD2195A3F900BAA060 /* DecryptUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,9 +43,9 @@
 		E7D4FDAD21958A9100BAA060 /* BLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
 		E7D4FDAF21958AB600BAA060 /* BLEDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEDevice.swift; sourceTree = "<group>"; };
 		E7D4FDB221958AE400BAA060 /* EMVDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EMVDevice.swift; sourceTree = "<group>"; };
-		E7D4FDB521958B3B00BAA060 /* DecryptUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
 		E7D4FDB821958BB600BAA060 /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = IDTech.framework; sourceTree = "<group>"; };
 		E7D4FDB921958BB600BAA060 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		E7D4FDBD2195A3F900BAA060 /* DecryptUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecryptUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,7 +152,7 @@
 		E7D4FDB421958B1F00BAA060 /* Decrypt */ = {
 			isa = PBXGroup;
 			children = (
-				E7D4FDB521958B3B00BAA060 /* DecryptUtils.swift */,
+				E7D4FDBD2195A3F900BAA060 /* DecryptUtils.swift */,
 			);
 			path = Decrypt;
 			sourceTree = "<group>";
@@ -238,7 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E79B8D2A216DC80600D35E93 /* BLEDeviceTableViewCell.swift in Sources */,
-				E7D4FDB621958B3B00BAA060 /* DecryptUtils.swift in Sources */,
+				E7D4FDBE2195A3F900BAA060 /* DecryptUtils.swift in Sources */,
 				E739AB66217C96D300CB04C0 /* String+Hex.swift in Sources */,
 				E7281CAE2178DDA90069B633 /* Collection+Hex.swift in Sources */,
 				E7C92EBE216D0B2800B444BA /* AppDelegate.swift in Sources */,

@@ -199,8 +199,8 @@ class DecryptionUtility {
                     ksn: String(format:"%llX", baseKSNInt)
                     ).toHexString();
                 
-                let ksnHex = String(format:"%llX", baseKSNInt)
-                let keyHex = currKey
+//                let ksnHex = String(format:"%llX", baseKSNInt)
+//                let keyHex = currKey
                 
                 pass += 1
             }
