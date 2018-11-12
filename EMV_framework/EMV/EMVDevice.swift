@@ -135,9 +135,13 @@ extension EmvDevice: IDT_VP3300_Delegate {
         onEmvSendMessage?(message)
     }
     
-    func swipeMSRData(_ cardData: IDTMSRData!) {
+    func swipeMSRData(_ emvData: IDTMSRData!) {
         debugPrint("IDTech SDK received data");
         debugPrint(" --- SWIPE DATA RECEIVED ---")
+        
+        debugPrint(emvData.cardData)
+        debugPrint(emvData.ksn)
+        debugPrint( emvData.unencryptedTags)
     }
     
     func emvTransactionData(_ emvData: IDTEMVData!,
@@ -146,10 +150,14 @@ extension EmvDevice: IDT_VP3300_Delegate {
         
         if emvData == nil {
             onEmvDataParseError?("Emv data empty")
+            
+            return
         }
         
         if emvData.resultCodeV2 == EMV_RESULT_CODE_V2_TIME_OUT {
             onEmvTimeout?()
+            
+            return
         }
         
         // Swipe
