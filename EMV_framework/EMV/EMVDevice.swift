@@ -120,6 +120,24 @@ extension EmvDevice: IDT_VP3300_Delegate {
     }
     
     func deviceConnected() {
+        var response: NSData?
+        
+//        var commandValue: UInt32 = 0
+//        var scanner = Scanner.localizedScanner(with: "F0")
+//        (scanner as AnyObject).scanHexInt32(&commandValue)
+//
+//        var subCommandValue: UInt32 = 0
+//        scanner = Scanner.localizedScanner(with: "00")
+//        (scanner as AnyObject).scanHexInt32(&subCommandValue)
+        let rt = IDT_VP3300
+            .sharedController()
+            .device_sendIDGCommand(UInt8(240),
+                                   subCommand: UInt8(0),
+                                   data: IDTUtility.hex(toData:"0000"), //3c1e
+                                   response: &response)
+        
+        debugPrint(IDTUtility.data(toPrintableString: response as Data!))
+        
         onEmvConnected?()
     }
     
