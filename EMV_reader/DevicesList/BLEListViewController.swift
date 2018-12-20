@@ -106,6 +106,10 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
         isConnecting = false;
         connectButton.isEnabled = false
         listeningButton.isEnabled = true
+        
+        b.configureSleepModeAndPowerOffTimes(
+            sleepTimeInSec: 60,
+            powerOffTimeInSec: 30)
     }
     
   
