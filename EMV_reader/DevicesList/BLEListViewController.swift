@@ -77,7 +77,7 @@ class BLEListViewController: UIViewController {
     func autoConnect(list: Set<BLEDevice>) {
         let filtered = list.filter { $0.isSupportedEmv }
         
-        if filtered.count > 0 && !isConnected {
+        if filtered.count > 0 && !isConnected && !isConnecting {
             guard let uuid = filtered.first?.getIdentifier() else { return; }
 
             connect(uuid: uuid)
