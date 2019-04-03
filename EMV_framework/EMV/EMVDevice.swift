@@ -153,10 +153,12 @@ extension EmvDevice: IDT_VP3300_Delegate {
     }
     
     func deviceConnected() {
+        debugPrint("Device connected")
         onEmvConnected?()
     }
     
     func deviceDisconnected() {
+        debugPrint("Device diconnected")
         onEmvDisconnected?()
     }
     
