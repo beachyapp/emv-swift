@@ -26,8 +26,6 @@ class EmvDevice: NSObject {
     override init() {
         super.init()
         
-        debugPrint(IDT_VP3300.sdk_version)
-        
         IDT_VP3300
             .sharedController()
             .delegate = self
@@ -65,7 +63,6 @@ class EmvDevice: NSObject {
          * Enables CLTS and MSR, waiting for swipe or tap to occur.
          * Returns IDTEMVData to deviceDelegate::emvTransactionData:()
          */
-//        IDT_VP3300.sharedController().ctls_startTransaction()
         
         if (IDT_VP3300
             .sharedController()
@@ -78,8 +75,6 @@ class EmvDevice: NSObject {
                 .sharedController()?
                 .device_cancelTransaction()
 
-//            IDT_VP3300.sharedController().msr_cancelMSRSwipe();
-//            IDT_VP3300.sharedController().device_cancelTransaction();
             if RETURN_CODE_DO_SUCCESS == cancelReturnCode {
                 let rt = IDT_VP3300
                     .sharedController()
@@ -102,9 +97,7 @@ class EmvDevice: NSObject {
     }
     
     func connect(friendlyName: String) -> Bool {
-//        IDT_VP3300
-//            .sharedController()
-//            .device_disableBLEDeviceSearch()
+
         if IDT_VP3300.sharedController()?.isConnected() ?? false {
             return true
         }
@@ -122,10 +115,6 @@ class EmvDevice: NSObject {
         if IDT_VP3300.sharedController()?.isConnected() ?? false {
             return true
         }
-        
-        //        IDT_VP3300
-        //            .sharedController()
-        //            .device_disableBLEDeviceSearch()
         
         return IDT_VP3300
             .sharedController()
@@ -168,9 +157,7 @@ extension EmvDevice: IDT_VP3300_Delegate {
     }
     
     func deviceMessage(_ message: String!) {
-        debugPrint("DEVICE MESSAGE")
-        debugPrint(" --- --- --- ")
-        debugPrint(message)
+        debugPrint("Device message: \(message ?? "Unknown")")
 
         onEmvSendMessage?(message)
     }

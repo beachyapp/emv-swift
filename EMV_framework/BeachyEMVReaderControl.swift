@@ -85,7 +85,7 @@ open class BeachyEMVReaderControl: NSObject {
     ///
     /// - Parameter uuid: device UUID
     /// - Returns: true if connecting
-    @objc open func  connect(uuid: UUID) -> Bool {
+    @objc open func connect(uuid: UUID) -> Bool {
         return emvDeviceControl.connect(uuid: uuid)
     }
  
@@ -112,10 +112,12 @@ open class BeachyEMVReaderControl: NSObject {
     private func initializeEmv() {
         emvDeviceControl.onEmvConnected = {
             [weak self] () in self?.delegate?.readerConnected()
+            self?.bluetoothControl.stopScan()
         }
         
         emvDeviceControl.onEmvDisconnected = {
             [weak self] () in self?.delegate?.readerDisconnected()
+            self?.bluetoothControl.startScan()
         }
         
         emvDeviceControl.onEmvDataParseError = {
@@ -127,9 +129,9 @@ open class BeachyEMVReaderControl: NSObject {
         
         emvDeviceControl.onEmvTimeout = {
             [weak self] () in
-            self?
-                .delegate?
-                .readerDataParseError(errorMessage: "Timed out")
+                self?
+                    .delegate?
+                    .readerDataParseError(errorMessage: "Timed out")
         }
         
         emvDeviceControl.onEmvSendMessage = {

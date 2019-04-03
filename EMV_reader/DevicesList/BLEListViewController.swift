@@ -66,6 +66,7 @@ class BLEListViewController: UIViewController {
     }
     
     func listUpdate(list: Set<BLEDevice>) {
+        debugPrint(list)
         self.devices = list;
         self.tableView.reloadData()
     }
@@ -85,6 +86,8 @@ class BLEListViewController: UIViewController {
     }
     
     private func connect(uuid: UUID) {
+        debugPrint("Connect triggered for \(uuid.uuidString) at \(DispatchTime.now())")
+        
         isConnecting = b.connect(uuid: uuid)
         isConnected = false
         
@@ -117,7 +120,7 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
         
         let ret = b.configureSleepModeAndPowerOffTimes(
             sleepTimeInSec: 60,
-            powerOffTimeInSec: 90)
+            powerOffTimeInSec: 30)
         let device = IDT_VP3300.sharedController()?.device_connectedBLEDevice()
         let code = IDT_VP3300.sharedController()?.device_getResponseCodeString(Int32(ret))
         
