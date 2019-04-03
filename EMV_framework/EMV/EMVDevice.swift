@@ -119,12 +119,13 @@ class EmvDevice: NSObject {
     }
     
     func connect(uuid: UUID) -> Bool {
-//        IDT_VP3300
-//            .sharedController()
-//            .device_disableBLEDeviceSearch()
         if IDT_VP3300.sharedController()?.isConnected() ?? false {
             return true
         }
+        
+        //        IDT_VP3300
+        //            .sharedController()
+        //            .device_disableBLEDeviceSearch()
         
         return IDT_VP3300
             .sharedController()

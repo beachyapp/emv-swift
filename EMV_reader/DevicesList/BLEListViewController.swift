@@ -14,7 +14,8 @@ class BLEListViewController: UIViewController {
     
     var devices: Set<BLEDevice> = []
     var selectedDevice: BLEDevice? = nil
-    
+    var connectedTime: DispatchTime = DispatchTime.now()
+    var disconnectedTime: DispatchTime = DispatchTime.now()
     var b: BeachyEMVReaderControl = BeachyEMVReaderControl.shared
     
     @IBOutlet weak var connectionStatus: UILabel!
@@ -84,8 +85,6 @@ class BLEListViewController: UIViewController {
     }
     
     private func connect(uuid: UUID) {
-        debugPrint("#3 ????????????   connect triggered")
-        
         isConnecting = b.connect(uuid: uuid)
         isConnected = false
         
@@ -105,7 +104,9 @@ class BLEListViewController: UIViewController {
 }
 
 extension BLEListViewController: BeachyEMVReaderControlProtocol {
+    
     func readerConnected() {
+        connectedTime = DispatchTime.now()
         
         isConnecting = false
         isConnected = true
@@ -139,11 +140,18 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
     }
 
     func readerDisconnected() {
+        disconnectedTime = DispatchTime.now();
+        
         updateConnectionStatus("disconnected")
         isConnecting = false
         isConnected = false
         connectButton.isEnabled = selectedDevice != nil
         listeningButton.isEnabled = false
+        
+        let nanoTime = disconnectedTime.uptimeNanoseconds - connectedTime.uptimeNanoseconds
+        let timeInterval = Double(nanoTime) / 1_000_000_000
+        
+        statusUpdate(status: "EMV disconnected after \(timeInterval) seconds")
     }
 
     func readerDataParseError(errorMessage: String) {
