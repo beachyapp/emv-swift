@@ -26,6 +26,8 @@ class EmvDevice: NSObject {
     override init() {
         super.init()
         
+        debugPrint(IDT_VP3300.sdk_version)
+        
         IDT_VP3300
             .sharedController()
             .delegate = self
@@ -63,7 +65,7 @@ class EmvDevice: NSObject {
          * Enables CLTS and MSR, waiting for swipe or tap to occur.
          * Returns IDTEMVData to deviceDelegate::emvTransactionData:()
          */
-        IDT_VP3300.sharedController().ctls_startTransaction()
+//        IDT_VP3300.sharedController().ctls_startTransaction()
         
         if (IDT_VP3300
             .sharedController()
@@ -72,20 +74,27 @@ class EmvDevice: NSObject {
             /**
              * Make sure we cancel any outgoing transaction
              */
-            IDT_VP3300.sharedController().msr_cancelMSRSwipe();
-            IDT_VP3300.sharedController().device_cancelTransaction();
-            
-            let rt = IDT_VP3300
-                .sharedController()
-                .device_startTransaction(amount,
+            let cancelReturnCode = IDT_VP3300
+                .sharedController()?
+                .device_cancelTransaction()
+
+//            IDT_VP3300.sharedController().msr_cancelMSRSwipe();
+//            IDT_VP3300.sharedController().device_cancelTransaction();
+            if RETURN_CODE_DO_SUCCESS == cancelReturnCode {
+                let rt = IDT_VP3300
+                    .sharedController()
+                    .device_startTransaction(amount,
                                          amtOther: 0,
                                          type: 0,
                                          timeout: timeout,
                                          tags: nil,
                                          forceOnline: false,
                                          fallback: true)
-            if RETURN_CODE_DO_SUCCESS != rt {
-                throw EmvError.cannotStartTransaction(message: String(rt.rawValue, radix: 16))
+                if RETURN_CODE_DO_SUCCESS != rt {
+                    throw EmvError.cannotStartTransaction(message: String(rt.rawValue, radix: 16))
+                }
+            } else {
+                throw EmvError.cannotStartTransaction(message: "Cannot cancel previous transaction")
             }
         } else {
             throw EmvError.deviceIsNotConnected
@@ -93,10 +102,13 @@ class EmvDevice: NSObject {
     }
     
     func connect(friendlyName: String) -> Bool {
-        IDT_VP3300
-            .sharedController()
-            .device_disableBLEDeviceSearch()
-        
+//        IDT_VP3300
+//            .sharedController()
+//            .device_disableBLEDeviceSearch()
+        if IDT_VP3300.sharedController()?.isConnected() ?? false {
+            return true
+        }
+
         IDT_VP3300
             .sharedController()
             .device_setBLEFriendlyName(friendlyName)
@@ -107,9 +119,12 @@ class EmvDevice: NSObject {
     }
     
     func connect(uuid: UUID) -> Bool {
-        IDT_VP3300
-            .sharedController()
-            .device_disableBLEDeviceSearch()
+//        IDT_VP3300
+//            .sharedController()
+//            .device_disableBLEDeviceSearch()
+        if IDT_VP3300.sharedController()?.isConnected() ?? false {
+            return true
+        }
         
         return IDT_VP3300
             .sharedController()
@@ -150,6 +165,10 @@ extension EmvDevice: IDT_VP3300_Delegate {
     }
     
     func deviceMessage(_ message: String!) {
+        debugPrint("DEVICE MESSAGE")
+        debugPrint(" --- --- --- ")
+        debugPrint(message)
+
         onEmvSendMessage?(message)
     }
     
@@ -159,7 +178,7 @@ extension EmvDevice: IDT_VP3300_Delegate {
         
         debugPrint(emvData.cardData)
         debugPrint(emvData.ksn)
-        debugPrint( emvData.unencryptedTags)
+        debugPrint(emvData.unencryptedTags)
     }
     
     func emvTransactionData(_ emvData: IDTEMVData!,

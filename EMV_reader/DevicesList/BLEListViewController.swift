@@ -109,7 +109,7 @@ extension BLEListViewController: BeachyEMVReaderControlProtocol {
         
         b.configureSleepModeAndPowerOffTimes(
             sleepTimeInSec: 60,
-            powerOffTimeInSec: 30)
+            powerOffTimeInSec: 90)
     }
     
   
