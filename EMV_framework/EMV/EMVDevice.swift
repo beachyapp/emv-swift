@@ -22,7 +22,7 @@ class EmvDevice: NSObject {
     var onEmvSendMessage: ((_ message: String) -> Void)?
     var onEmvDataParseError: ((_ errorMessage: String) -> Void)?
     var onEmvDataReceived: ((_ data: String) -> Void)?
-
+    
     override init() {
         super.init()
         
@@ -34,7 +34,7 @@ class EmvDevice: NSObject {
     func setReaderSleepAndPowerOffTime(
         sleepTimeInSec: Int = 60,
         powerOffTimeInSec: Int = 30) -> UInt32 {
-
+        
         var response: NSData?
         let sleep = String(format:"%02X", sleepTimeInSec)
         let powerOff = String(format: "%02X", powerOffTimeInSec)
@@ -43,10 +43,19 @@ class EmvDevice: NSObject {
         return IDT_VP3300
             .sharedController()
             .device_sendIDGCommand(UInt8(240), //f0
-                                   subCommand: UInt8(0), //00
-                                   data: IDTUtility.hex(toData:dataAsHex),
-                                   response: &response)
+                subCommand: UInt8(0), //00
+                data: IDTUtility.hex(toData:dataAsHex),
+                response: &response)
             .rawValue
+    }
+    
+    func cancelTransaction() -> Void {
+        /**
+         * Make sure we cancel any outgoing transaction
+         */
+        IDT_VP3300
+            .sharedController()?
+            .device_cancelTransaction()
     }
     
     /// Enable Transaction Request
@@ -58,33 +67,26 @@ class EmvDevice: NSObject {
     ///   - timeout: timeout
     /// - Throws: cannot start transaction error or device not connected
     func readCC(_ amount: Double, timeout: Int32 = 60) throws -> Void {
-        /**
-         * Enable Transaction Request
-         * Enables CLTS and MSR, waiting for swipe or tap to occur.
-         * Returns IDTEMVData to deviceDelegate::emvTransactionData:()
-         */
         
         if (IDT_VP3300
             .sharedController()
             .device_isConnected(IDT_DEVICE_VP3300_IOS)) {
             
-            /**
-             * Make sure we cancel any outgoing transaction
-             */
             let cancelReturnCode = IDT_VP3300
                 .sharedController()?
                 .device_cancelTransaction()
-
+            
             if RETURN_CODE_DO_SUCCESS == cancelReturnCode {
+                
                 let rt = IDT_VP3300
                     .sharedController()
                     .device_startTransaction(amount,
-                                         amtOther: 0,
-                                         type: 0,
-                                         timeout: timeout,
-                                         tags: nil,
-                                         forceOnline: false,
-                                         fallback: true)
+                                             amtOther: 0,
+                                             type: 0,
+                                             timeout: timeout,
+                                             tags: nil,
+                                             forceOnline: false,
+                                             fallback: true)
                 if RETURN_CODE_DO_SUCCESS != rt {
                     throw EmvError.cannotStartTransaction(message: String(rt.rawValue, radix: 16))
                 }
@@ -97,11 +99,11 @@ class EmvDevice: NSObject {
     }
     
     func connect(friendlyName: String) -> Bool {
-
+        
         if IDT_VP3300.sharedController()?.isConnected() ?? false {
             return true
         }
-
+        
         IDT_VP3300
             .sharedController()
             .device_setBLEFriendlyName(friendlyName)
@@ -143,12 +145,10 @@ extension EmvDevice: IDT_VP3300_Delegate {
     }
     
     func deviceConnected() {
-        debugPrint("Device connected")
         onEmvConnected?()
     }
     
     func deviceDisconnected() {
-        debugPrint("Device diconnected")
         onEmvDisconnected?()
     }
     
@@ -157,24 +157,11 @@ extension EmvDevice: IDT_VP3300_Delegate {
     }
     
     func deviceMessage(_ message: String!) {
-        debugPrint("Device message: \(message ?? "Unknown")")
-
         onEmvSendMessage?(message)
-    }
-    
-    func swipeMSRData(_ emvData: IDTMSRData!) {
-        debugPrint("IDTech SDK received data");
-        debugPrint(" --- SWIPE DATA RECEIVED ---")
-        
-        debugPrint(emvData.cardData)
-        debugPrint(emvData.ksn)
-        debugPrint(emvData.unencryptedTags)
     }
     
     func emvTransactionData(_ emvData: IDTEMVData!,
                             errorCode error: Int32) {
-        debugPrint("IDTech SDK received data");
-        
         if emvData == nil {
             onEmvDataParseError?("Emv data empty")
             
@@ -205,12 +192,13 @@ extension EmvDevice: IDT_VP3300_Delegate {
             } catch {
                 onEmvDataParseError?("Cannot parse card data")
             }
+            
+            return
         }
         
         if emvData.unencryptedTags != nil {
             // Unencrypted tags + empty card data
             // means contactless
-            
             if emvData.cardData == nil {
                 let ksnData = emvData.unencryptedTags["FFEE12"] as? Data
                 
@@ -238,6 +226,7 @@ extension EmvDevice: IDT_VP3300_Delegate {
                     onEmvDataParseError?("Missing KSN")
                 }
                 
+                return
             }
         }
     }

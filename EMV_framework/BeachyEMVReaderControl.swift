@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol BeachyEMVReaderControlProtocol {
+@objc public protocol BeachyEMVReaderControlProtocol {
     func bluetoothStatusUpdate(status: String)
     func bluetoothAvailableDevicesListUpdate(devices: Set<BLEDevice>)
     
@@ -20,21 +20,21 @@ public protocol BeachyEMVReaderControlProtocol {
     func readerSendsMessage(message: String)
 }
 
-open class BeachyEMVReaderControl: NSObject {
+@objc open class BeachyEMVReaderControl: NSObject {
     
-    open var delegate: BeachyEMVReaderControlProtocol?
-    public static var shared = BeachyEMVReaderControl()
+    @objc open var delegate: BeachyEMVReaderControlProtocol?
+    @objc public static var shared = BeachyEMVReaderControl()
     
     private var bluetoothControl = BLE()
     private var emvDeviceControl = EmvDevice()
     
     override init() {
         super.init()
-
+        
         initializeBluetooth()
         initializeEmv()
     }
-
+    
     /// Configure EMV sleep and power off times
     /// - Parameters:
     ///   - sleepTimeInSec: sleep time in seconds
@@ -47,6 +47,10 @@ open class BeachyEMVReaderControl: NSObject {
         return emvDeviceControl.setReaderSleepAndPowerOffTime(
             sleepTimeInSec: sleepTimeInSec,
             powerOffTimeInSec: powerOffTimeInSec)
+    }
+    
+    @objc open func cancelReadCardData() -> Void {
+        emvDeviceControl.cancelTransaction()
     }
     
     /// Send a command to EMV reader to become active and
@@ -88,7 +92,7 @@ open class BeachyEMVReaderControl: NSObject {
     @objc open func connect(uuid: UUID) -> Bool {
         return emvDeviceControl.connect(uuid: uuid)
     }
- 
+    
     
     /// Initialize low-energy bluetooth handlers
     private func initializeBluetooth() {
@@ -122,16 +126,16 @@ open class BeachyEMVReaderControl: NSObject {
         
         emvDeviceControl.onEmvDataParseError = {
             [weak self] (error: String) in
-                self?
-                    .delegate?
-                    .readerDataParseError(errorMessage: error)
+            self?
+                .delegate?
+                .readerDataParseError(errorMessage: error)
         }
         
         emvDeviceControl.onEmvTimeout = {
             [weak self] () in
-                self?
-                    .delegate?
-                    .readerDataParseError(errorMessage: "Timed out")
+            self?
+                .delegate?
+                .readerDataParseError(errorMessage: "Timed out")
         }
         
         emvDeviceControl.onEmvSendMessage = {
