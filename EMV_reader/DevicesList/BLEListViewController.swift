@@ -28,8 +28,12 @@ class BLEListViewController: UIViewController {
     
     @IBAction func startListeningLoop(_ sender: UIButton) {
         let res = b.readCardData(0)
-            
         statusUpdate(status: "Waiting for swipe/connection: \(res)")
+        
+        if res != 0 {
+            let res = b.readCardData(0)
+            statusUpdate(status: "Waiting for swipe/connection: \(res)")
+        }
     }
     
     @IBAction func connect(_ sender: UIButton) {
@@ -66,7 +70,6 @@ class BLEListViewController: UIViewController {
     }
     
     func listUpdate(list: Set<BLEDevice>) {
-        debugPrint(list)
         self.devices = list;
         self.tableView.reloadData()
     }

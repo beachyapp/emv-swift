@@ -48,10 +48,6 @@ extension BLE: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
     }
     
-    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        debugPrint("DID CONNECT HERE!!!");
-    }
-    
     func centralManager(_ central: CBCentralManager,
                         didDiscover peripheral: CBPeripheral,
                         advertisementData: [String : Any],
